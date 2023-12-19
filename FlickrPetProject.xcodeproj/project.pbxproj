@@ -8,24 +8,45 @@
 
 /* Begin PBXBuildFile section */
 		615165322B2DE0BC00A02D15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615165312B2DE0BC00A02D15 /* AppDelegate.swift */; };
-		615165342B2DE0BC00A02D15 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615165332B2DE0BC00A02D15 /* SceneDelegate.swift */; };
-		615165362B2DE0BC00A02D15 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615165352B2DE0BC00A02D15 /* ViewController.swift */; };
-		615165392B2DE0BC00A02D15 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 615165372B2DE0BC00A02D15 /* Main.storyboard */; };
 		6151653C2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6151653A2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld */; };
 		6151653E2B2DE0BE00A02D15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6151653D2B2DE0BE00A02D15 /* Assets.xcassets */; };
 		615165412B2DE0BE00A02D15 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6151653F2B2DE0BE00A02D15 /* LaunchScreen.storyboard */; };
+		6151654E2B2DEA9200A02D15 /* MainTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151654D2B2DEA9200A02D15 /* MainTVC.swift */; };
+		61C789132B31926E00943CDF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 61C789152B31926E00943CDF /* Localizable.strings */; };
+		61C789192B31A08600943CDF /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C789172B31A08600943CDF /* CollectionViewCell.swift */; };
+		61C7891A2B31A08600943CDF /* CollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61C789182B31A08600943CDF /* CollectionViewCell.xib */; };
+		61C7891D2B31A7C800943CDF /* UserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C7891B2B31A7C800943CDF /* UserVC.swift */; };
+		61C7891E2B31A7C800943CDF /* UserVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61C7891C2B31A7C800943CDF /* UserVC.xib */; };
+		61C789202B31AF3500943CDF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C7891F2B31AF3500943CDF /* Model.swift */; };
+		61C789232B31B3D400943CDF /* Networker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C789222B31B3D400943CDF /* Networker.swift */; };
+		61C789262B31B7AE00943CDF /* Dynamic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C789252B31B7AE00943CDF /* Dynamic.swift */; };
+		61C789282B31BCC000943CDF /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C789272B31BCC000943CDF /* UserViewModel.swift */; };
+		61DFCE822B2DEBC10013F856 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DFCE802B2DEBC10013F856 /* SearchVC.swift */; };
+		61DFCE832B2DEBC10013F856 /* SearchVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61DFCE812B2DEBC10013F856 /* SearchVC.xib */; };
+		61DFCE852B2DEC420013F856 /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DFCE842B2DEC420013F856 /* Texts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6151652E2B2DE0BC00A02D15 /* FlickrPetProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrPetProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		615165312B2DE0BC00A02D15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		615165332B2DE0BC00A02D15 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		615165352B2DE0BC00A02D15 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		615165382B2DE0BC00A02D15 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6151653B2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FlickrPetProject.xcdatamodel; sourceTree = "<group>"; };
 		6151653D2B2DE0BE00A02D15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		615165402B2DE0BE00A02D15 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		615165422B2DE0BE00A02D15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6151654D2B2DEA9200A02D15 /* MainTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTVC.swift; sourceTree = "<group>"; };
+		61C789142B31926E00943CDF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		61C789162B31928E00943CDF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		61C789172B31A08600943CDF /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		61C789182B31A08600943CDF /* CollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewCell.xib; sourceTree = "<group>"; };
+		61C7891B2B31A7C800943CDF /* UserVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVC.swift; sourceTree = "<group>"; };
+		61C7891C2B31A7C800943CDF /* UserVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserVC.xib; sourceTree = "<group>"; };
+		61C7891F2B31AF3500943CDF /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		61C789222B31B3D400943CDF /* Networker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networker.swift; sourceTree = "<group>"; };
+		61C789252B31B7AE00943CDF /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
+		61C789272B31BCC000943CDF /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
+		61DFCE802B2DEBC10013F856 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
+		61DFCE812B2DEBC10013F856 /* SearchVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchVC.xib; sourceTree = "<group>"; };
+		61DFCE842B2DEC420013F856 /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,16 +79,82 @@
 		615165302B2DE0BC00A02D15 /* FlickrPetProject */ = {
 			isa = PBXGroup;
 			children = (
-				615165312B2DE0BC00A02D15 /* AppDelegate.swift */,
-				615165332B2DE0BC00A02D15 /* SceneDelegate.swift */,
-				615165352B2DE0BC00A02D15 /* ViewController.swift */,
-				615165372B2DE0BC00A02D15 /* Main.storyboard */,
-				6151653D2B2DE0BE00A02D15 /* Assets.xcassets */,
-				6151653F2B2DE0BE00A02D15 /* LaunchScreen.storyboard */,
-				615165422B2DE0BE00A02D15 /* Info.plist */,
-				6151653A2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld */,
+				61C789212B31B3BE00943CDF /* Services */,
+				6151654A2B2DE61500A02D15 /* ViewModels */,
+				615165492B2DE60A00A02D15 /* Views */,
+				615165482B2DE60100A02D15 /* Models */,
+				6151654C2B2DE63100A02D15 /* Extensions */,
+				6151654B2B2DE62100A02D15 /* Resources */,
 			);
 			path = FlickrPetProject;
+			sourceTree = "<group>";
+		};
+		615165482B2DE60100A02D15 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				61C7891F2B31AF3500943CDF /* Model.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		615165492B2DE60A00A02D15 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6151654D2B2DEA9200A02D15 /* MainTVC.swift */,
+				61C7891B2B31A7C800943CDF /* UserVC.swift */,
+				61C7891C2B31A7C800943CDF /* UserVC.xib */,
+				61DFCE802B2DEBC10013F856 /* SearchVC.swift */,
+				61DFCE812B2DEBC10013F856 /* SearchVC.xib */,
+				61C789172B31A08600943CDF /* CollectionViewCell.swift */,
+				61C789182B31A08600943CDF /* CollectionViewCell.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6151654A2B2DE61500A02D15 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				61C789242B31B5AC00943CDF /* Binding */,
+				61C789272B31BCC000943CDF /* UserViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		6151654B2B2DE62100A02D15 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6151653D2B2DE0BE00A02D15 /* Assets.xcassets */,
+				615165422B2DE0BE00A02D15 /* Info.plist */,
+				6151653F2B2DE0BE00A02D15 /* LaunchScreen.storyboard */,
+				6151653A2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld */,
+				615165312B2DE0BC00A02D15 /* AppDelegate.swift */,
+				61DFCE842B2DEC420013F856 /* Texts.swift */,
+				61C789152B31926E00943CDF /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		6151654C2B2DE63100A02D15 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		61C789212B31B3BE00943CDF /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				61C789222B31B3D400943CDF /* Networker.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		61C789242B31B5AC00943CDF /* Binding */ = {
+			isa = PBXGroup;
+			children = (
+				61C789252B31B7AE00943CDF /* Dynamic.swift */,
+			);
+			path = Binding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +199,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 615165252B2DE0BC00A02D15;
 			productRefGroup = 6151652F2B2DE0BC00A02D15 /* Products */;
@@ -128,9 +216,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61C789132B31926E00943CDF /* Localizable.strings in Resources */,
+				61DFCE832B2DEBC10013F856 /* SearchVC.xib in Resources */,
+				61C7891A2B31A08600943CDF /* CollectionViewCell.xib in Resources */,
 				615165412B2DE0BE00A02D15 /* LaunchScreen.storyboard in Resources */,
 				6151653E2B2DE0BE00A02D15 /* Assets.xcassets in Resources */,
-				615165392B2DE0BC00A02D15 /* Main.storyboard in Resources */,
+				61C7891E2B31A7C800943CDF /* UserVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,30 +232,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61C7891D2B31A7C800943CDF /* UserVC.swift in Sources */,
+				61C789282B31BCC000943CDF /* UserViewModel.swift in Sources */,
+				61C789262B31B7AE00943CDF /* Dynamic.swift in Sources */,
+				61DFCE852B2DEC420013F856 /* Texts.swift in Sources */,
 				6151653C2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld in Sources */,
-				615165362B2DE0BC00A02D15 /* ViewController.swift in Sources */,
+				61DFCE822B2DEBC10013F856 /* SearchVC.swift in Sources */,
+				61C789192B31A08600943CDF /* CollectionViewCell.swift in Sources */,
+				61C789232B31B3D400943CDF /* Networker.swift in Sources */,
+				6151654E2B2DEA9200A02D15 /* MainTVC.swift in Sources */,
 				615165322B2DE0BC00A02D15 /* AppDelegate.swift in Sources */,
-				615165342B2DE0BC00A02D15 /* SceneDelegate.swift in Sources */,
+				61C789202B31AF3500943CDF /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		615165372B2DE0BC00A02D15 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				615165382B2DE0BC00A02D15 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		6151653F2B2DE0BE00A02D15 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				615165402B2DE0BE00A02D15 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		61C789152B31926E00943CDF /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				61C789142B31926E00943CDF /* en */,
+				61C789162B31928E00943CDF /* ru */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -175,6 +274,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -238,6 +338,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -298,12 +399,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NL7Q67RJLP;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = FlickrPetProject/Info.plist;
+				INFOPLIST_FILE = FlickrPetProject/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -311,9 +412,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.smalldevcloud.FlickrPetProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -326,12 +430,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NL7Q67RJLP;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = FlickrPetProject/Info.plist;
+				INFOPLIST_FILE = FlickrPetProject/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -339,9 +443,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.smalldevcloud.FlickrPetProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
