@@ -59,7 +59,7 @@ final class Networker {
 
     }
     
-    func getMediumPhoto(photoID: String, onResponse: @escaping (URL) -> Void) {
+    func getMediumSizeLinks(photoID: String, onResponse: @escaping (URL) -> Void) {
 //        функция получает ссылки на разные размеры конкретной фотографии
         let request = buildRequest(apiMethod: .GetSizes, photoId: photoID)
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -76,14 +76,14 @@ final class Networker {
                     for item in model.sizes.size {
                         if item.label == .Medium {
                             guard let jsonUrl = URL(string: item.source) else { return }
-                            print(jsonUrl)
+//                            print(jsonUrl)
                             onResponse(jsonUrl)
                         }
                     }
                 }
             } catch let parsingError {
                 print("Parsing sizes error", parsingError)
-//                print(response!)
+                print(response!) 
             }
         }
         task.resume()

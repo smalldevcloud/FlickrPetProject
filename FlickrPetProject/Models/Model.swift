@@ -61,6 +61,12 @@ enum SizeLables: String, Decodable {
     case Medium640 = "Medium 640"
     case Medium800 = "Medium 800"
     case Large = "Large"
+    case Large1600 = "Large 1600"
+    case Large2048 = "Large 2048"
+    case XLarge3K = "X-Large 3K"
+    case XLarge4K = "X-Large 4K"
+    case XLarge5K = "X-Large 5K"
+    case XLarge6K = "X-Large 6K"
     case Original = "Original"
 
 }

@@ -13,13 +13,14 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var photo: UIImageView!
     let networker = Networker()
-    var updateHandler: (() -> ())!
+    let imageCache = NSCache<AnyObject, AnyObject>.sharedInstance
+    private var downloadTask: URLSessionDownloadTask?
+    
+    
     var photoLink: URL? {
         didSet {
-            networker.downloadPhoto(from: photoLink!, onResponse: { result in
-                self.photo.image = UIImage(data: result)
-//                self.updateHandler()
-            })
+                self.downloadItemImage(imageURL: self.photoLink)
+
         }
     }
     
@@ -29,21 +30,51 @@ class CollectionViewCell: UICollectionViewCell {
         // Initialization code
     }
     
-    func getLink(photoID: String) {
-        networker.getMediumPhoto(photoID: photoID, onResponse: { result in
-            self.photoLink = result
-        })
+//    func getLink(photoID: String) {
+//        networker.getMediumPhoto(photoID: photoID, onResponse: { result in
+//            self.photoLink = result
+//        })
+//    }
+
+    private func downloadItemImage(imageURL: URL?) {
+        
+            if let urlOfImage = imageURL {
+                if let cachedImage = imageCache.object(forKey: urlOfImage.absoluteString as NSString){
+                self.photo!.image = cachedImage as? UIImage
+                print("cached image was used")
+            } else {
+                let session = URLSession.shared
+                self.downloadTask = session.downloadTask(
+                    with: urlOfImage as URL, completionHandler: { [weak self] url, response, error in
+                        if error == nil, let url = url, let data = NSData(contentsOf: url), let image = UIImage(data: data as Data) {
+
+                            DispatchQueue.main.async() {
+
+                                let imageToCache = image
+
+                                if let strongSelf = self, let imageView = strongSelf.photo {
+                                    print("image downloaded")
+                                    imageView.image = imageToCache
+
+                                    self!.imageCache.setObject(imageToCache, forKey: urlOfImage.absoluteString as NSString , cost: 1)
+                                }
+                            }
+                        } else {
+                            //print("ERROR \(error?.localizedDescription)")
+                        }
+                })
+                self.downloadTask!.resume()
+            }
+          }
+        }
+    
+    override public func prepareForReuse() {
+      self.downloadTask?.cancel()
+      photo.image = UIImage(systemName: "gear")
     }
 
-//    init?(titleLbl: UILabel!, photo: UIImageView!, photoLink: URL, frame: CGRect) {
-//        self.titleLbl = titleLbl
-//        self.photo = photo
-//        self.photoLink = photoLink
-//        super.init(frame: frame)
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-    
+    deinit {
+      self.downloadTask?.cancel()
+      photo.image = nil
+    }
 }

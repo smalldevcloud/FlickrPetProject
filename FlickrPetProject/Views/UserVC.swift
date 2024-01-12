@@ -13,6 +13,7 @@ class UserVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = UserViewModel()
     var photos: [FlickrPhoto] = []
+    var links: [URL] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +31,19 @@ class UserVC: UIViewController {
     func bindViewModel() {
         viewModel.state.bind{ newState in
             switch newState {
-            case let .success(photosResponse):
+            case let .successPhotos(photosResponse):
                 self.photos = photosResponse.photos.photo
+//                возможно релоад дату можно убрать
+                self.collectionView.reloadData()
+            case let .successLinks(linksResponse):
+                print("links received")
+                self.links = linksResponse
                 self.collectionView.reloadData()
             case let .error(error):
                 self.showAlert(err: error)
             case .loading:
                 break
+            
             }
         }
     }
@@ -58,11 +65,10 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
-        cell.getLink(photoID: photos[indexPath.row].id)
-//        cell.updateHandler = {
-//            self.collectionView.reloadData()
-//            print("update happend")
-//        }
+        if !links.isEmpty {
+            cell.photoLink = links[indexPath.row]
+            print("attempt")
+        }
         cell.titleLbl.text = photos[indexPath.row].title
         return cell
     }
@@ -70,6 +76,4 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
             return CGSize(width: 650, height: 250)
         }
-    
-    
 }

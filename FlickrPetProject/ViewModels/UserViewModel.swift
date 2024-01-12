@@ -11,7 +11,8 @@ extension UserViewModel {
 //    описания возможных состояний для этой вьюмодели (и впоследствии для вью)
     enum UserVMState {
         case loading
-        case success(FlickrJSONResponse)
+        case successPhotos(FlickrJSONResponse)
+        case successLinks([URL])
         case error(Error)
     }
 }
@@ -22,17 +23,45 @@ class UserViewModel {
     
     let networker = Networker()
     
+    var photos: [FlickrPhoto]? {
+        didSet {
+            getLinks()
+        }
+    }
+    
     func start() {
         networker.getPhotos(onResponse: { [weak self] result in
 //            нетворкер делает запрос за фотографиями, и в случае успеха ответ сервера передаётся уже во вью вместе со стейтом для отображения
             switch result {
-            case let .success(photosResponse):
-                self?.state.value = .success(photosResponse)
+
             case let .failure(error):
                 self?.state.value = .error(error)
+            case let .success(response):
+                self?.photos = response.photos.photo
+                self?.state.value = .successPhotos(response)
+                
             }
             
         })
     }
     
+    func getLinks() {
+
+        var links: [URL] = [] {
+            didSet {
+                if links.count == photos?.count {
+                    self.state.value = .successLinks(links)
+                }
+            }
+        }
+        
+        for photo in photos! {
+            networker.getMediumSizeLinks(photoID: photo.id, onResponse: { result in
+
+                links.append(result)
+            })
+        }
+        
+        
+    }
 }
