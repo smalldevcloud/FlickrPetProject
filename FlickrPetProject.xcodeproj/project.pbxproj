@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		610807BB2B51770B007821B1 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610807BA2B51770B007821B1 /* ImageCache.swift */; };
+		610807BD2B51A98B007821B1 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610807BC2B51A98B007821B1 /* ImageCache.swift */; };
 		615165322B2DE0BC00A02D15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615165312B2DE0BC00A02D15 /* AppDelegate.swift */; };
 		6151653C2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6151653A2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld */; };
 		6151653E2B2DE0BE00A02D15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6151653D2B2DE0BE00A02D15 /* Assets.xcassets */; };
@@ -29,7 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		610807BA2B51770B007821B1 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		610807BC2B51A98B007821B1 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		6151652E2B2DE0BC00A02D15 /* FlickrPetProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrPetProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		615165312B2DE0BC00A02D15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6151653B2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FlickrPetProject.xcdatamodel; sourceTree = "<group>"; };
@@ -150,7 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				61C789222B31B3D400943CDF /* Networker.swift */,
-				610807BA2B51770B007821B1 /* ImageCache.swift */,
+				610807BC2B51A98B007821B1 /* ImageCache.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -239,7 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61C7891D2B31A7C800943CDF /* UserVC.swift in Sources */,
-				610807BB2B51770B007821B1 /* ImageCache.swift in Sources */,
+				610807BD2B51A98B007821B1 /* ImageCache.swift in Sources */,
 				61C789282B31BCC000943CDF /* UserViewModel.swift in Sources */,
 				61C789262B31B7AE00943CDF /* Dynamic.swift in Sources */,
 				61DFCE852B2DEC420013F856 /* Texts.swift in Sources */,

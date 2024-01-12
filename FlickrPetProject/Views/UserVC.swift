@@ -33,10 +33,7 @@ class UserVC: UIViewController {
             switch newState {
             case let .successPhotos(photosResponse):
                 self.photos = photosResponse.photos.photo
-//                возможно релоад дату можно убрать
-                self.collectionView.reloadData()
             case let .successLinks(linksResponse):
-                print("links received")
                 self.links = linksResponse
                 self.collectionView.reloadData()
             case let .error(error):
@@ -49,7 +46,7 @@ class UserVC: UIViewController {
     }
     
     func showAlert(err: Error) {
-        
+        print("TODO: finish the error alert")
     }
     
 
@@ -67,7 +64,6 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         if !links.isEmpty {
             cell.photoLink = links[indexPath.row]
-            print("attempt")
         }
         cell.titleLbl.text = photos[indexPath.row].title
         return cell

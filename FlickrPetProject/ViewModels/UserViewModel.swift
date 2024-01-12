@@ -25,6 +25,7 @@ class UserViewModel {
     
     var photos: [FlickrPhoto]? {
         didSet {
+//            как только список фото появился - запрос на получение ссылок
             getLinks()
         }
     }
@@ -39,9 +40,7 @@ class UserViewModel {
             case let .success(response):
                 self?.photos = response.photos.photo
                 self?.state.value = .successPhotos(response)
-                
             }
-            
         })
     }
     
@@ -49,6 +48,7 @@ class UserViewModel {
 
         var links: [URL] = [] {
             didSet {
+//                как только получены ссылке по всем фото - изменение стейта приложения, которое требует передать список ссылок
                 if links.count == photos?.count {
                     self.state.value = .successLinks(links)
                 }
@@ -56,8 +56,8 @@ class UserViewModel {
         }
         
         for photo in photos! {
+//            получение ссылки на картинку среднего размера по каждой из фотографий
             networker.getMediumSizeLinks(photoID: photo.id, onResponse: { result in
-
                 links.append(result)
             })
         }

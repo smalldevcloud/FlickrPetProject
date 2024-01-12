@@ -8,55 +8,48 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
+    
 //    ячейка коллекции
+    
     static let identifier = "collectionCell"
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var photo: UIImageView!
     let networker = Networker()
-    let imageCache = NSCache<AnyObject, AnyObject>.sharedInstance
     private var downloadTask: URLSessionDownloadTask?
-    
     
     var photoLink: URL? {
         didSet {
+//                как только ссылка на фото установлена - качается фото
                 self.downloadItemImage(imageURL: self.photoLink)
-
         }
     }
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+
     }
-    
-//    func getLink(photoID: String) {
-//        networker.getMediumPhoto(photoID: photoID, onResponse: { result in
-//            self.photoLink = result
-//        })
-//    }
 
     private func downloadItemImage(imageURL: URL?) {
-        
+//        скачивание фото по ссылке
             if let urlOfImage = imageURL {
-                if let cachedImage = imageCache.object(forKey: urlOfImage.absoluteString as NSString){
+//          ссылка также используется как ключ для сохранения в кэш. И если в кэш уже сохранено, то картинка берётся оттуда, вместо повторной загрузки
+                if let cachedImage = ImageCache.shared.object(forKey: urlOfImage.absoluteString as NSString){
                 self.photo!.image = cachedImage as? UIImage
-                print("cached image was used")
             } else {
+//                если в кэше не нашлось - загрузка
                 let session = URLSession.shared
                 self.downloadTask = session.downloadTask(
                     with: urlOfImage as URL, completionHandler: { [weak self] url, response, error in
                         if error == nil, let url = url, let data = NSData(contentsOf: url), let image = UIImage(data: data as Data) {
 
                             DispatchQueue.main.async() {
-
                                 let imageToCache = image
 
                                 if let strongSelf = self, let imageView = strongSelf.photo {
-                                    print("image downloaded")
                                     imageView.image = imageToCache
-
-                                    self!.imageCache.setObject(imageToCache, forKey: urlOfImage.absoluteString as NSString , cost: 1)
+//                                    после отображения картинки - сохранение в кэш
+                                    ImageCache.shared.setObject(imageToCache, forKey: urlOfImage.absoluteString as NSString , cost: 1)
                                 }
                             }
                         } else {
@@ -69,11 +62,13 @@ class CollectionViewCell: UICollectionViewCell {
         }
     
     override public func prepareForReuse() {
+//        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое, картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестернки
       self.downloadTask?.cancel()
       photo.image = UIImage(systemName: "gear")
     }
 
     deinit {
+//    отмена загрузки, если объект уничножается
       self.downloadTask?.cancel()
       photo.image = nil
     }

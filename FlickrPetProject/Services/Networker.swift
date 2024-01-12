@@ -76,14 +76,14 @@ final class Networker {
                     for item in model.sizes.size {
                         if item.label == .Medium {
                             guard let jsonUrl = URL(string: item.source) else { return }
-//                            print(jsonUrl)
+
                             onResponse(jsonUrl)
                         }
                     }
                 }
             } catch let parsingError {
                 print("Parsing sizes error", parsingError)
-                print(response!) 
+
             }
         }
         task.resume()
@@ -92,7 +92,6 @@ final class Networker {
     func downloadPhoto(from url: URL, onResponse: @escaping (Data) -> Void) {
         getData(from: url) { data, response, error in
             guard let data = data, error == nil else { return }
-//            print(response?.suggestedFilename ?? url.lastPathComponent)
             DispatchQueue.main.async() { [weak self] in
                 onResponse(data)
             }

@@ -71,7 +71,7 @@ enum SizeLables: String, Decodable {
 
 }
 
-// собственна ошибка для удобства отображения пользователю
+// собственная ошибка для удобства отображения пользователю
 struct ApiError: Error, LocalizedError {
     let message: String
     
