@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIScrollView_InfiniteScroll
 
 class UserVC: UIViewController {
 // этот класс отвечает за отображение фотографий только одного конретного юзера Flickr. В данном случае - моих. Добавлено для того, чтобы приложение не выглядело слишком пустым, чтобы была возможность попереключаться по экранам.
@@ -14,6 +15,11 @@ class UserVC: UIViewController {
     let viewModel = UserViewModel()
     var photos: [FlickrPhoto] = []
     var links: [URL] = []
+    var pagesLoaded = 0 {
+        didSet {
+            print("print: \(pagesLoaded)")
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +39,7 @@ class UserVC: UIViewController {
             switch newState {
             case let .successPhotos(photosResponse):
                 self.photos = photosResponse.photos.photo
+                self.pagesLoaded = photosResponse.photos.page
             case let .successLinks(linksResponse):
                 self.links = linksResponse
                 self.collectionView.reloadData()

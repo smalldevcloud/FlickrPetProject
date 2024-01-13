@@ -8,7 +8,7 @@
 import Foundation
 final class Networker {
 
-    func buildRequest(apiMethod: FlickrAPIMetod, photoId: String?) -> URLRequest {
+    func buildRequest(apiMethod: FlickrAPIMetod, photoId: String?, page: Int) -> URLRequest {
 //        функция собирает ссылку, по которой будет производится запрос
         var queryItems = [
             URLQueryItem(name: "format", value: Texts.NetworkerEnum.format),
@@ -17,10 +17,15 @@ final class Networker {
             URLQueryItem(name: "api_key", value: Texts.NetworkerEnum.apiKey),
             URLQueryItem(name: "nojsoncallback", value: Texts.NetworkerEnum.noJsonCallback)
         ]
+        
         if apiMethod == .Photos {
             queryItems.append(URLQueryItem(name: "user_id", value: Texts.NetworkerEnum.userID))
+            queryItems.append(URLQueryItem(name: "per_page", value: "10"))
+            queryItems.append(URLQueryItem(name: "page", value: "\(page)"))
+            
         } else {
             queryItems.append(URLQueryItem(name: "photo_id", value: photoId))
+            
         }
         var urlComps = URLComponents(string: "https://flickr.com/services/rest/")!
         urlComps.queryItems = queryItems
@@ -34,7 +39,7 @@ final class Networker {
     
     func getPhotos(onResponse: @escaping (Result<FlickrJSONResponse, Error>) -> Void) {
 
-        let request = buildRequest(apiMethod: .Photos, photoId: "")
+        let request = buildRequest(apiMethod: .Photos, photoId: "", page: 1)
 //        функция делает запрос списка фотографий
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard let dataResponse = data,
@@ -61,7 +66,7 @@ final class Networker {
     
     func getMediumSizeLinks(photoID: String, onResponse: @escaping (URL) -> Void) {
 //        функция получает ссылки на разные размеры конкретной фотографии
-        let request = buildRequest(apiMethod: .GetSizes, photoId: photoID)
+        let request = buildRequest(apiMethod: .GetSizes, photoId: photoID, page: 0)
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard let dataResponse = data,
                   error == nil else {
