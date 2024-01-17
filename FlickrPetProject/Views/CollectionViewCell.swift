@@ -14,7 +14,6 @@ class CollectionViewCell: UICollectionViewCell {
     static let identifier = "collectionCell"
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var photo: UIImageView!
-    let networker = Networker()
     private var downloadTask: URLSessionDownloadTask?
     
     var photoLink: URL? {

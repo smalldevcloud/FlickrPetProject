@@ -7,6 +7,10 @@
 
 import Foundation
 final class Networker {
+    
+    static let shared = Networker()
+    
+    private init() {}
 
     func buildRequest(apiMethod: FlickrAPIMetod, photoId: String?, page: Int) -> URLRequest {
 //        функция собирает ссылку, по которой будет производится запрос
@@ -46,7 +50,6 @@ final class Networker {
                   error == nil else {
                 onResponse(.failure(error ?? ApiError(message: "Response error")))
                 return }
-            print(request)
             
             do {
                 let decoder = JSONDecoder()

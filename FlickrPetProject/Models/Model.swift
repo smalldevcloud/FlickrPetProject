@@ -28,6 +28,26 @@ struct FlickrPhoto: Decodable {
     let farm: Int
     let title: String
     let ispublic, isfriend, isfamily: Int
+    
+    func toDomainObject() -> FlickrDomainPhoto {
+        let domainPhoto = FlickrDomainPhoto()
+        domainPhoto.id = id
+        domainPhoto.title = title
+        return domainPhoto
+    }
+}
+
+class FlickrDomainPhoto {
+    var id: String = ""
+    var title: String = ""
+    var link: URL?
+    
+    func getLink(completionHandler: @escaping (Bool) -> Void) {
+        Networker.shared.getMediumSizeLinks(photoID: id, onResponse: { result in
+            self.link = result
+            completionHandler(true)
+        })
+    }
 }
 
 //модель, описывающая размеры изображений

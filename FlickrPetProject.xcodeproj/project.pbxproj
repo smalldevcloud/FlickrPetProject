@@ -26,7 +26,6 @@
 		61DFCE822B2DEBC10013F856 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DFCE802B2DEBC10013F856 /* SearchVC.swift */; };
 		61DFCE832B2DEBC10013F856 /* SearchVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61DFCE812B2DEBC10013F856 /* SearchVC.xib */; };
 		61DFCE852B2DEC420013F856 /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DFCE842B2DEC420013F856 /* Texts.swift */; };
-		61FD39AA2B5304D0001E11EF /* UIScrollView_InfiniteScroll in Frameworks */ = {isa = PBXBuildFile; productRef = 61FD39A92B5304D0001E11EF /* UIScrollView_InfiniteScroll */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,7 +58,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61FD39AA2B5304D0001E11EF /* UIScrollView_InfiniteScroll in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,7 +180,6 @@
 			);
 			name = FlickrPetProject;
 			packageProductDependencies = (
-				61FD39A92B5304D0001E11EF /* UIScrollView_InfiniteScroll */,
 			);
 			productName = FlickrPetProject;
 			productReference = 6151652E2B2DE0BC00A02D15 /* FlickrPetProject.app */;
@@ -214,7 +211,6 @@
 			);
 			mainGroup = 615165252B2DE0BC00A02D15;
 			packageReferences = (
-				61FD39A82B5304D0001E11EF /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */,
 			);
 			productRefGroup = 6151652F2B2DE0BC00A02D15 /* Products */;
 			projectDirPath = "";
@@ -490,25 +486,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		61FD39A82B5304D0001E11EF /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pronebird/UIScrollView-InfiniteScroll";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		61FD39A92B5304D0001E11EF /* UIScrollView_InfiniteScroll */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 61FD39A82B5304D0001E11EF /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */;
-			productName = UIScrollView_InfiniteScroll;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		6151653A2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld */ = {
