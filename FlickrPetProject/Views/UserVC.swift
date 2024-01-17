@@ -13,35 +13,37 @@ class UserVC: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = UserViewModel()
-    var photos: [FlickrPhoto] = []
-    var links: [URL] = []
-    var pagesLoaded = 0 {
-        didSet {
-            print("print: \(pagesLoaded)")
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         self.bindViewModel()
         self.viewModel.start()
-        
     }
     
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.addInfiniteScroll { (collectionView) -> Void in
+            collectionView.performBatchUpdates({ () -> Void in
+                
+                if self.viewModel.pagesLoaded < self.viewModel.allPagesCount {
+                    self.viewModel.start()
+                }
+                
+            }, completion: { (finished) -> Void in
+                // finish infinite scroll animations
+                collectionView.finishInfiniteScroll()
+            });
+        }
     }
     
     func bindViewModel() {
         viewModel.state.bind{ newState in
             switch newState {
-            case let .successPhotos(photosResponse):
-                self.photos = photosResponse.photos.photo
-                self.pagesLoaded = photosResponse.photos.page
-            case let .successLinks(linksResponse):
-                self.links = linksResponse
+            case let .successPhotos:
+                  print(" ")
+            case .successLinks:
                 self.collectionView.reloadData()
             case let .error(error):
                 self.showAlert(err: error)
@@ -55,13 +57,16 @@ class UserVC: UIViewController {
     func showAlert(err: Error) {
         print("TODO: finish the error alert")
     }
-    
-
 }
 
 extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        if viewModel.pagesLoaded == 0 {
+            return 0
+        } else {
+            
+            return viewModel.links.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -69,10 +74,10 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
-        if !links.isEmpty {
-            cell.photoLink = links[indexPath.row]
+        if !viewModel.links.isEmpty {
+            cell.photoLink = viewModel.links[indexPath.row]
         }
-        cell.titleLbl.text = photos[indexPath.row].title
+        cell.titleLbl.text = viewModel.photos[indexPath.row].title
         return cell
     }
     

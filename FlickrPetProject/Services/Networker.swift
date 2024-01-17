@@ -37,15 +37,16 @@ final class Networker {
         return request
     }
     
-    func getPhotos(onResponse: @escaping (Result<FlickrJSONResponse, Error>) -> Void) {
+    func getPhotos(forPage: Int, onResponse: @escaping (Result<FlickrJSONResponse, Error>) -> Void) {
 
-        let request = buildRequest(apiMethod: .Photos, photoId: "", page: 1)
+        let request = buildRequest(apiMethod: .Photos, photoId: "", page: forPage)
 //        функция делает запрос списка фотографий
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard let dataResponse = data,
                   error == nil else {
                 onResponse(.failure(error ?? ApiError(message: "Response error")))
                 return }
+            print(request)
             
             do {
                 let decoder = JSONDecoder()
@@ -53,15 +54,13 @@ final class Networker {
                 
                 DispatchQueue.main.async {
                     onResponse(.success(model))
-
                 }
+                
             } catch let parsingError {
                 onResponse(.failure(parsingError))
-
             }
         }
         task.resume()
-
     }
     
     func getMediumSizeLinks(photoID: String, onResponse: @escaping (URL) -> Void) {
@@ -88,7 +87,6 @@ final class Networker {
                 }
             } catch let parsingError {
                 print("Parsing sizes error", parsingError)
-
             }
         }
         task.resume()
