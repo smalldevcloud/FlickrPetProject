@@ -29,6 +29,7 @@ class UserVC: UIViewController {
     
     
     func bindViewModel() {
+//        описание состояний, которые изменяет вьюмодель
         viewModel.state.bind{ newState in
             switch newState {
             case .successLinks:

@@ -37,6 +37,7 @@ struct FlickrPhoto: Decodable {
     }
 }
 
+//модель для более удобной работы с фотографиями
 class FlickrDomainPhoto {
     var id: String = ""
     var title: String = ""

@@ -27,8 +27,9 @@ class UserViewModel {
     func start() {
         
         if pagesLoaded <= allPagesCount {
+//            еcли загружено меньше страниц, чем их есть - запрос в сеть за новой
             Networker.shared.getPhotos(forPage: pagesLoaded+1, onResponse: { [weak self] result in
-                //            нетворкер делает запрос за фотографиями, и в случае успеха ответ сервера передаётся уже во вью вместе со стейтом для отображения
+                //            нетворкер делает запрос за фотографиями, и в случае успеха объекты преобразуются в более удобные для использования  и сохраняется во вьюмодели
                 switch result {
                     
                 case let .failure(error):
@@ -37,6 +38,7 @@ class UserViewModel {
                     var tempDomainObjects = [FlickrDomainPhoto]()
                     var counter = 0 {
                         didSet {
+//                            объекты не передаются дальше, пока для каждого фото из пачке не будет получена ссылка
                             if counter == tempDomainObjects.count {
                                 self?.pagesLoaded = response.photos.page
                                 self?.allPagesCount = response.photos.pages
@@ -46,8 +48,9 @@ class UserViewModel {
                             }
                         }
                     }
+                    
                     for item in response.photos.photo {
-                        
+//                        получение прямых ссылок на картинку для каждого фото
                         let newPhoto = item.toDomainObject()
                         newPhoto.getLink(completionHandler: { [weak self] response in
                             if response == true {
@@ -57,7 +60,6 @@ class UserViewModel {
                         self?.photos.append(newPhoto)
                         tempDomainObjects.append(item.toDomainObject())
                     }
-                    
                 }
             })
         }

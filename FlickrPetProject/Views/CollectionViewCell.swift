@@ -23,7 +23,6 @@ class CollectionViewCell: UICollectionViewCell {
         }
     }
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -61,7 +60,7 @@ class CollectionViewCell: UICollectionViewCell {
         }
     
     override public func prepareForReuse() {
-//        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое, картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестернки
+//        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое, картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестерёнки
       self.downloadTask?.cancel()
       photo.image = UIImage(systemName: "gear")
     }
