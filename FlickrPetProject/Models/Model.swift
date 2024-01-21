@@ -10,12 +10,13 @@ import Foundation
 enum FlickrAPIMetod: String {
     case Photos = "flickr.people.getPhotos"
     case GetSizes = "flickr.photos.getSizes"
+    case Search = "flickr.photos.search"
 }
 
 //модель, описывающая ответ который придёт при запросе на получение фото (конкретного пользователя, либо по поисковому запросу)
 struct FlickrJSONResponse: Decodable {
     let photos: FlickrPhotos
-    let stat: String
+    let stat: String?
 }
 // MARK: - Photos
 struct FlickrPhotos: Decodable {

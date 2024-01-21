@@ -16,8 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //        переназначение точки входа, стартовым станет MainTabVC
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        let controller = MainTVC()
-        window?.rootViewController = controller
+        let nav = UINavigationController(rootViewController: MainTVC())
+//        let controller = MainTVC()
+        window?.rootViewController = nav
         window?.makeKeyAndVisible()
         
         return true

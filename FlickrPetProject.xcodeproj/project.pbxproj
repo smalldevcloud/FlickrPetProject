@@ -13,6 +13,7 @@
 		6151653E2B2DE0BE00A02D15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6151653D2B2DE0BE00A02D15 /* Assets.xcassets */; };
 		615165412B2DE0BE00A02D15 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6151653F2B2DE0BE00A02D15 /* LaunchScreen.storyboard */; };
 		6151654E2B2DEA9200A02D15 /* MainTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151654D2B2DEA9200A02D15 /* MainTVC.swift */; };
+		615A2B642B5A66990076BEB5 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615A2B632B5A66990076BEB5 /* SearchViewModel.swift */; };
 		61C789132B31926E00943CDF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 61C789152B31926E00943CDF /* Localizable.strings */; };
 		61C789192B31A08600943CDF /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C789172B31A08600943CDF /* CollectionViewCell.swift */; };
 		61C7891A2B31A08600943CDF /* CollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61C789182B31A08600943CDF /* CollectionViewCell.xib */; };
@@ -37,6 +38,7 @@
 		615165402B2DE0BE00A02D15 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		615165422B2DE0BE00A02D15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6151654D2B2DEA9200A02D15 /* MainTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTVC.swift; sourceTree = "<group>"; };
+		615A2B632B5A66990076BEB5 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		61C789142B31926E00943CDF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		61C789162B31928E00943CDF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		61C789172B31A08600943CDF /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 			children = (
 				61C789242B31B5AC00943CDF /* Binding */,
 				61C789272B31BCC000943CDF /* UserViewModel.swift */,
+				615A2B632B5A66990076BEB5 /* SearchViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				6151653C2B2DE0BC00A02D15 /* FlickrPetProject.xcdatamodeld in Sources */,
 				61DFCE822B2DEBC10013F856 /* SearchVC.swift in Sources */,
 				61C789192B31A08600943CDF /* CollectionViewCell.swift in Sources */,
+				615A2B642B5A66990076BEB5 /* SearchViewModel.swift in Sources */,
 				61C7892A2B31FAF700943CDF /* Extensions.swift in Sources */,
 				61C789232B31B3D400943CDF /* Networker.swift in Sources */,
 				6151654E2B2DEA9200A02D15 /* MainTVC.swift in Sources */,

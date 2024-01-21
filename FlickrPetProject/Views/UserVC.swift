@@ -20,10 +20,17 @@ class UserVC: UIViewController {
         self.viewModel.start()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.prefetchDataSource = self
+        
+        
     }
     
     
