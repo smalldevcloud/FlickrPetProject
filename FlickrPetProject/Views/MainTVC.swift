@@ -33,15 +33,15 @@ class MainTVC: UITabBarController, UISearchBarDelegate {
         navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.tintColor = .cyan
         
+        searchBar.showsCancelButton = true
+        
         navigationItem.titleView  = searchBar
-//        searchBar.showsCancelButton = true
-//        navigationItem.rightBarButtonItem = nil
         searchBar.becomeFirstResponder()
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchRequest = searchBar.text else { return }
-        
+//        если текст тот же, что был до этого - просто запуск вьюмодели. Если текст другой - то перед запуском обнуление загруженных страницы и указание нового текста для поиска
         if searchRequest == searchVC.viewModel.textForSearch {
             searchVC.viewModel.start()
         } else {
@@ -50,9 +50,11 @@ class MainTVC: UITabBarController, UISearchBarDelegate {
             searchVC.viewModel.start()
         }
         
-        
         searchBar.endEditing(true)
     }
     
-
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//        прячет клавиатуру по нажатию "cancel" в searchBar
+        searchBar.endEditing(true)
+    }
 }

@@ -81,6 +81,13 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         return CGSize(width: 650, height: 250)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let newViewController = ShowPhotoVC()
+        newViewController.photos = viewModel.photos
+        newViewController.selectedPhoto = indexPath.row
+        self.navigationController?.pushViewController(newViewController, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
 //        метод для "бесконечного" скролла
 //        стартует вьюмодель как только collectionView подгружает последнюю ячейку

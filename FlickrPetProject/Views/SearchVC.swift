@@ -45,6 +45,7 @@ class SearchVC: UIViewController {
         }
     }
 }
+
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if viewModel.pagesLoaded == 0 {
@@ -73,6 +74,13 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
                 self.viewModel.start()
             }
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let newViewController = ShowPhotoVC()
+        newViewController.photos = viewModel.photos
+        newViewController.selectedPhoto = indexPath.row
+        self.navigationController?.pushViewController(newViewController, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
