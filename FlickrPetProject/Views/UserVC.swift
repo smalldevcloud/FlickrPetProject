@@ -12,6 +12,7 @@ class UserVC: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = UserViewModel()
+    let defaults = UserDefaultsHelper()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,12 +74,24 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         if !viewModel.photos.isEmpty {
             cell.photoLink = viewModel.photos[indexPath.row].link
         }
+        if defaults.isInFavourite(id: viewModel.photos[indexPath.row].id) {
+            cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+        } else {
+            cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
+        }
+        
+        cell.favouritPressed = {
+
+            self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
+            self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
+            
+        }
         cell.titleLbl.text = viewModel.photos[indexPath.row].title
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 650, height: 250)
+        return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -14,7 +14,10 @@ class CollectionViewCell: UICollectionViewCell {
     static let identifier = "collectionCell"
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var photo: UIImageView!
+    @IBOutlet weak var favouriteBtn: UIButton!
+    
     private var downloadTask: URLSessionDownloadTask?
+    var favouritPressed : (() -> ()) = {}
     
     var photoLink: URL? {
         didSet {
@@ -63,6 +66,10 @@ class CollectionViewCell: UICollectionViewCell {
 //        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое, картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестерёнки
       self.downloadTask?.cancel()
       photo.image = UIImage(systemName: "gear")
+    }
+    
+    @IBAction func favoriteIcon(_ sender: Any) {
+        favouritPressed()
     }
 
     deinit {

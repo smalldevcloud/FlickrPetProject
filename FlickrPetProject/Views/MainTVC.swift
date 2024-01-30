@@ -9,23 +9,29 @@ class MainTVC: UITabBarController, UISearchBarDelegate {
 //    этот класс необходим для реализации TabBar'a (переключение вьюконтроллеров по нажатию иконок снизу экрана)
     let userVC = UserVC()
     let searchVC = SearchVC()
+    let favouriteVC = FavouriteVC()
     let searchBar = UISearchBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setViewControllers([
+            userVC,
             searchVC,
-            userVC], animated: true)
+            favouriteVC
+            ], animated: true)
         self.setupUI()
         
     }
     
     func setupUI() {
-        self.userVC.tabBarItem.image = UIImage(systemName: "cloud.bolt.rain.fill")
-        self.userVC.tabBarItem.title = Texts.TabsEnum.cloud_tab_name
+        userVC.tabBarItem.image = UIImage(systemName: "cloud.bolt.rain.fill")
+        userVC.tabBarItem.title = Texts.TabsEnum.cloud_tab_name
         
-        self.searchVC.tabBarItem.image = UIImage(systemName: "magnifyingglass")
-        self.searchVC.tabBarItem.title = Texts.TabsEnum.search_tab_name
+        searchVC.tabBarItem.image = UIImage(systemName: "magnifyingglass")
+        searchVC.tabBarItem.title = Texts.TabsEnum.search_tab_name
+        
+        favouriteVC.tabBarItem.image = UIImage(systemName: "star")
+        favouriteVC.tabBarItem.title = Texts.TabsEnum.favourite_tab_name
         
         searchBar.delegate = self
         
@@ -36,7 +42,7 @@ class MainTVC: UITabBarController, UISearchBarDelegate {
         searchBar.showsCancelButton = true
         
         navigationItem.titleView  = searchBar
-        searchBar.becomeFirstResponder()
+//        searchBar.becomeFirstResponder()
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

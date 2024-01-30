@@ -14,10 +14,15 @@ enum Texts {
     enum TabsEnum {
         static var cloud_tab_name: String {  NSLocalizedString("user tab name", comment: "") }
         static var search_tab_name: String { NSLocalizedString("search tab name", comment: "") }
+        static var favourite_tab_name: String { NSLocalizedString("favourite tab name", comment: "") }
     }
     
     enum SearchVCEnum {
         
+    }
+    
+    enum UserDefaultsEnum {
+        static var favouritsArrKey = "favourits"
     }
     
     enum NetworkerEnum {

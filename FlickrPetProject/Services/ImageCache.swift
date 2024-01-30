@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ImageCache {
+final class ImageCache {
 //    синглтон для кэширования изображений
     @objc static var shared: NSCache<NSString, AnyObject> = {
         let cache = NSCache<NSString, AnyObject>()

@@ -30,6 +30,7 @@ struct FlickrPhoto: Decodable {
     let title: String
     let ispublic, isfriend, isfamily: Int
     
+    
     func toDomainObject() -> FlickrDomainPhoto {
         let domainPhoto = FlickrDomainPhoto()
         domainPhoto.id = id
@@ -43,6 +44,7 @@ class FlickrDomainPhoto {
     var id: String = ""
     var title: String = ""
     var link: URL?
+    var isFavorite: Bool = false
     
     func getLink(completionHandler: @escaping (Bool) -> Void) {
         Networker.shared.getMediumSizeLinks(photoID: id, onResponse: { result in
@@ -71,7 +73,7 @@ struct Size: Decodable {
     let media: String
 }
 
-// енам с возможными массивами для быстрого доступа к значению
+// енам с возможными размерами для быстрого доступа к значению
 enum SizeLables: String, Decodable {
     case Square = "Square"
     case LargeSquare = "Large Square"

@@ -1,16 +1,16 @@
 //
-//  SearchVC.swift
+//  FavouriteVC.swift
 //  FlickrPetProject
 //
-//  Created by 8 on 16.12.23.
+//  Created by 8 on 29.01.24.
 //
 
 import UIKit
 
-class SearchVC: UIViewController {
-    
+class FavouriteVC: UIViewController {
+
     @IBOutlet weak var collectionView: UICollectionView!
-    let viewModel = SearchViewModel()
+    let viewModel = FavouritsViewModel() 
     let defaults = UserDefaultsHelper()
     
     override func viewDidLoad() {
@@ -19,51 +19,62 @@ class SearchVC: UIViewController {
         self.bindViewModel()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        отображение строки поиска юзеру
-        navigationController?.navigationBar.isHidden = false
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
+        self.viewModel.start()
     }
-    
+
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.prefetchDataSource = self
+
     }
     
     func bindViewModel() {
+//        описание состояний, которые изменяет вьюмодель
         viewModel.state.bind{ newState in
             switch newState {
-            case .successPhotos:
+            case .successLinks:
+                print("reload collection")
                 self.collectionView.reloadData()
             case let .error(error):
-                print(error.localizedDescription)
+//                self.showAlert(err: error)
+                print("alert")
             case .loading:
-                print("loading")
+                break
+                
             }
-            
         }
     }
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
 }
 
-extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
+extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if viewModel.pagesLoaded == 0 {
-            return 0
-        } else {
+
             return viewModel.photos.count
-        }
+
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         if !viewModel.photos.isEmpty {
-//            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку. как только ссылка будет установлена там сработает didSet, который начнёт загрузку
             cell.photoLink = viewModel.photos[indexPath.row].link
         }
-        
         if defaults.isInFavourite(id: viewModel.photos[indexPath.row].id) {
             cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
@@ -76,18 +87,12 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
             
         }
-        
         cell.titleLbl.text = viewModel.photos[indexPath.row].title
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        for index in indexPaths {
-//            prefetch используется для бесконечной загрузки фотографий. Как только долистано до предпоследней ячейки в коллекции - снова стартует вьюмодель за новой порцией фотографий
-            if index.row == viewModel.photos.count - 1 {
-                self.viewModel.start()
-            }
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -97,7 +102,13 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         self.navigationController?.pushViewController(newViewController, animated: true)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
-    }
+//    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+////        метод для "бесконечного" скролла
+////        стартует вьюмодель как только collectionView подгружает последнюю ячейку
+//        for index in indexPaths {
+//            if index.row == viewModel.photos.count - 1 {
+//                    self.viewModel.start()
+//            }
+//        }
+//    }
 }
