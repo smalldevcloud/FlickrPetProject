@@ -38,17 +38,27 @@
                                     <action selector="favoriteIcon:" destination="gTV-IL-0wX" eventType="touchUpInside" id="cji-hZ-o1N"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="idZ-5x-zkc">
+                                <rect key="frame" x="213.66666666666666" y="124" width="24.333333333333343" height="28"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="square.and.arrow.up.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="shareBtnTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="BB0-hi-rdT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="bkg-fA-qiw" firstAttribute="top" secondItem="16w-T1-gGI" secondAttribute="top" id="Epr-ja-08P"/>
                             <constraint firstAttribute="bottom" secondItem="bkg-fA-qiw" secondAttribute="bottom" id="MjF-1d-Tdr"/>
+                            <constraint firstItem="gPl-ic-IRy" firstAttribute="leading" secondItem="idZ-5x-zkc" secondAttribute="trailing" constant="16" id="QQ2-yb-94y"/>
                             <constraint firstAttribute="bottom" secondItem="loP-NK-T3i" secondAttribute="bottom" constant="16" id="QSo-GJ-w9M"/>
                             <constraint firstItem="bkg-fA-qiw" firstAttribute="leading" secondItem="16w-T1-gGI" secondAttribute="leading" id="StR-Gd-5A5"/>
                             <constraint firstAttribute="bottom" secondItem="gPl-ic-IRy" secondAttribute="bottom" constant="16" id="UPZ-Jb-I9p"/>
                             <constraint firstItem="loP-NK-T3i" firstAttribute="centerX" secondItem="16w-T1-gGI" secondAttribute="centerX" id="Xzi-HS-G0D"/>
                             <constraint firstAttribute="trailing" secondItem="gPl-ic-IRy" secondAttribute="trailing" constant="16" id="YVE-dL-gzN"/>
                             <constraint firstAttribute="trailing" secondItem="bkg-fA-qiw" secondAttribute="trailing" id="hbF-VE-W4k"/>
+                            <constraint firstAttribute="bottom" secondItem="idZ-5x-zkc" secondAttribute="bottom" constant="16" id="xhv-0V-cTt"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -64,12 +74,14 @@
             <connections>
                 <outlet property="favouriteBtn" destination="gPl-ic-IRy" id="tJp-Y3-VDf"/>
                 <outlet property="photo" destination="bkg-fA-qiw" id="lrW-yV-Ze4"/>
+                <outlet property="shareBtn" destination="idZ-5x-zkc" id="J3h-FR-vio"/>
                 <outlet property="titleLbl" destination="loP-NK-T3i" id="0aD-6R-J0n"/>
             </connections>
             <point key="canvasLocation" x="320.61068702290078" y="63.028169014084511"/>
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="square.and.arrow.up.fill" catalog="system" width="115" height="128"/>
         <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

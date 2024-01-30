@@ -19,6 +19,7 @@ class UserVC: UIViewController {
         self.setupUI()
         self.bindViewModel()
         self.viewModel.start()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -31,13 +32,10 @@ class UserVC: UIViewController {
         collectionView.dataSource = self
         collectionView.prefetchDataSource = self
         
-        
     }
     
-    
-    
     func bindViewModel() {
-//        описание состояний, которые изменяет вьюмодель
+        //        описание состояний, которые изменяет вьюмодель
         viewModel.state.bind{ newState in
             switch newState {
             case .successLinks:
@@ -46,7 +44,6 @@ class UserVC: UIViewController {
                 self.showAlert(err: error)
             case .loading:
                 break
-                
             }
         }
     }
@@ -81,11 +78,22 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         }
         
         cell.favouritPressed = {
-
+            
             self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
             
         }
+        
+        cell.sharePressed = {
+            
+            let imageToShare = [ cell.photo.image ]
+            let activityViewController = UIActivityViewController(activityItems: imageToShare, applicationActivities: nil)
+            activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+            activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+            self.present(activityViewController, animated: true, completion: nil)
+            
+        }
+        
         cell.titleLbl.text = viewModel.photos[indexPath.row].title
         return cell
     }
@@ -102,11 +110,11 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-//        метод для "бесконечного" скролла
-//        стартует вьюмодель как только collectionView подгружает последнюю ячейку
+        //        метод для "бесконечного" скролла
+        //        стартует вьюмодель как только collectionView подгружает последнюю ячейку
         for index in indexPaths {
             if index.row == viewModel.photos.count - 1 {
-                    self.viewModel.start()
+                self.viewModel.start()
             }
         }
     }

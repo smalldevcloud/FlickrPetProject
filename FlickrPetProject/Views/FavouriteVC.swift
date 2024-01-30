@@ -87,6 +87,15 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
             
         }
+        
+        cell.sharePressed = {
+            let imageToShare = [ cell.photo.image ]
+            let activityViewController = UIActivityViewController(activityItems: imageToShare, applicationActivities: nil)
+            activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+            activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+            self.present(activityViewController, animated: true, completion: nil)
+        }
+        
         cell.titleLbl.text = viewModel.photos[indexPath.row].title
         return cell
     }
