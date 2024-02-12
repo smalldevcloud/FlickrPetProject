@@ -55,6 +55,8 @@ class UserViewModel {
                         newPhoto.getLink(completionHandler: { [weak self] response in
                             if response == true {
                                 counter += 1
+                            } else {
+                                print("==========error============")
                             }
                         })
                         self?.photos.append(newPhoto)

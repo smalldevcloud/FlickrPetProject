@@ -37,12 +37,18 @@ class SearchVC: UIViewController {
             case .successPhotos:
                 self.collectionView.reloadData()
             case let .error(error):
-                print(error.localizedDescription)
+                self.showAlert(err: error)
             case .loading:
                 self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
             }
             
         }
+    }
+    
+    func showAlert(err: Error) {
+        let ac = UIAlertController(title: "Error", message: err.localizedDescription, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(ac, animated: true)
     }
 }
 

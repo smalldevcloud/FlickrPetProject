@@ -49,7 +49,9 @@ class UserVC: UIViewController {
     }
     
     func showAlert(err: Error) {
-        print("TODO: finish the error alert")
+        let ac = UIAlertController(title: "Error", message: err.localizedDescription, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(ac, animated: true)
     }
 }
 

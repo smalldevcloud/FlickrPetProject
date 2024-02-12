@@ -71,7 +71,7 @@ final class Networker {
         task.resume()
     }
     
-    func getMediumSizeLinks(photoID: String, onResponse: @escaping (URL) -> Void) {
+    func getMediumSizeLinks(photoID: String, onResponse: @escaping (Result<URL, Error>) -> Void) {
 //        функция получает ссылки на разные размеры конкретной фотографии
         let request = buildRequest(apiMethod: .GetSizes, param: photoID, page: 0)
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -94,11 +94,11 @@ final class Networker {
                             link = jsonUrl
                         }
                     }
-                    onResponse(link!)
+                    onResponse(.success(link!))
                 }
                 
             } catch let parsingError {
-                print("Parsing sizes error", parsingError)
+                onResponse(.failure(parsingError))
             }
         }
         task.resume()

@@ -41,11 +41,19 @@ class FavouritsViewModel {
                 
                 Networker.shared.getMediumSizeLinks(photoID: id, onResponse: { result in
                     let domainPhoto = FlickrDomainPhoto()
-                    domainPhoto.link = result
-                    domainPhoto.id = id
-                    self.photos.append(domainPhoto)
-                    print(result)
-                    counter += 1
+                    
+                    switch result {
+                    case let .success(url):
+                        domainPhoto.link = url
+                        domainPhoto.id = id
+                        self.photos.append(domainPhoto)
+                        print(result)
+                        counter += 1
+                    case let .failure(err):
+                        self.state.value = .error(err)
+                    }
+                    
+                    
                 })
             }
         } else {

@@ -48,8 +48,14 @@ class FlickrDomainPhoto {
     
     func getLink(completionHandler: @escaping (Bool) -> Void) {
         Networker.shared.getMediumSizeLinks(photoID: id, onResponse: { result in
-            self.link = result
-            completionHandler(true)
+            switch result {
+            case let .success(url):
+                self.link = url
+                completionHandler(true)
+            case let .failure(error):
+                completionHandler(false)
+                print(error.localizedDescription)
+            }
         })
     }
 }
