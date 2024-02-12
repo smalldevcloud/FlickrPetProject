@@ -39,7 +39,7 @@ class SearchVC: UIViewController {
             case let .error(error):
                 print(error.localizedDescription)
             case .loading:
-                print("loading")
+                self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
             }
             
         }

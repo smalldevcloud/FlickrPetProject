@@ -17,8 +17,8 @@ enum Texts {
         static var favourite_tab_name: String { NSLocalizedString("favourite tab name", comment: "") }
     }
     
-    enum SearchVCEnum {
-        
+    enum GeneralVCEnum {
+        static var empty_data: String { NSLocalizedString("empty data", comment: "") }
     }
     
     enum UserDefaultsEnum {

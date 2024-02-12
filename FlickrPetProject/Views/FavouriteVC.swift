@@ -36,13 +36,12 @@ class FavouriteVC: UIViewController {
         viewModel.state.bind{ newState in
             switch newState {
             case .successLinks:
-                print("reload collection")
                 self.collectionView.reloadData()
             case let .error(error):
 //                self.showAlert(err: error)
                 print("alert")
             case .loading:
-                break
+                self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
                 
             }
         }

@@ -43,7 +43,7 @@ class UserVC: UIViewController {
             case let .error(error):
                 self.showAlert(err: error)
             case .loading:
-                break
+                self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
             }
         }
     }
