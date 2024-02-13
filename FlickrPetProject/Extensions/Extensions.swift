@@ -25,3 +25,5 @@ extension UICollectionView {
 //        self.separatorStyle = .singleLine
     }
 }
+
+

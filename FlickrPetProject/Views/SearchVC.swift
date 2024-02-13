@@ -12,6 +12,7 @@ class SearchVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = SearchViewModel()
     let defaults = UserDefaultsHelper()
+    private let footerView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +24,11 @@ class SearchVC: UIViewController {
         super.viewDidAppear(animated)
 //        отображение строки поиска юзеру
         navigationController?.navigationBar.isHidden = false
+       
+//        footer в котором будет отображаться activity indicator пока подгружается след. результат
+        collectionView.register(CollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
+                (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
+        
     }
     
     func setupUI() {
@@ -35,11 +41,14 @@ class SearchVC: UIViewController {
         viewModel.state.bind{ newState in
             switch newState {
             case .successPhotos:
+                self.footerView.stopAnimating()
                 self.collectionView.reloadData()
             case let .error(error):
                 self.showAlert(err: error)
+                self.footerView.stopAnimating()
             case .loading:
                 self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
+               
             }
             
         }
@@ -100,7 +109,10 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
 //            prefetch используется для бесконечной загрузки фотографий. Как только долистано до предпоследней ячейки в коллекции - снова стартует вьюмодель за новой порцией фотографий
             if index.row == viewModel.photos.count - 1 {
                 self.viewModel.start()
+                self.footerView.startAnimating()
             }
+            
+            
         }
     }
     
@@ -114,4 +126,14 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+            if kind == UICollectionView.elementKindSectionFooter {
+                let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
+                footer.addSubview(footerView)
+                footerView.frame = CGRect(x: 0, y: 0, width: collectionView.bounds.width, height: 50)
+                return footer
+            }
+            return UICollectionReusableView()
+        }
 }

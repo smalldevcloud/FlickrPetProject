@@ -5,6 +5,7 @@
 //  Created by 8 on 19.12.23.
 //
 import Foundation
+import UIKit
 
 //enum который будет использоваться для указания метода при формировании url запроса
 enum FlickrAPIMetod: String {
@@ -107,5 +108,15 @@ struct ApiError: Error, LocalizedError {
     
     var errorDescription: String? {
         return self.message
+    }
+}
+
+public class CollectionViewFooterView: UICollectionReusableView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
