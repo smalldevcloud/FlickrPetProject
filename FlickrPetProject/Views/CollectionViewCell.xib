@@ -46,11 +46,15 @@
                                     <action selector="shareBtnTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="BB0-hi-rdT"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="28H-tH-OWQ">
+                                <rect key="frame" x="141" y="74" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="bkg-fA-qiw" firstAttribute="top" secondItem="16w-T1-gGI" secondAttribute="top" id="Epr-ja-08P"/>
                             <constraint firstAttribute="bottom" secondItem="bkg-fA-qiw" secondAttribute="bottom" id="MjF-1d-Tdr"/>
+                            <constraint firstItem="28H-tH-OWQ" firstAttribute="centerY" secondItem="bkg-fA-qiw" secondAttribute="centerY" id="OfV-QL-Oah"/>
                             <constraint firstItem="gPl-ic-IRy" firstAttribute="leading" secondItem="idZ-5x-zkc" secondAttribute="trailing" constant="16" id="QQ2-yb-94y"/>
                             <constraint firstAttribute="bottom" secondItem="loP-NK-T3i" secondAttribute="bottom" constant="16" id="QSo-GJ-w9M"/>
                             <constraint firstItem="bkg-fA-qiw" firstAttribute="leading" secondItem="16w-T1-gGI" secondAttribute="leading" id="StR-Gd-5A5"/>
@@ -59,6 +63,7 @@
                             <constraint firstAttribute="trailing" secondItem="gPl-ic-IRy" secondAttribute="trailing" constant="16" id="YVE-dL-gzN"/>
                             <constraint firstAttribute="trailing" secondItem="bkg-fA-qiw" secondAttribute="trailing" id="hbF-VE-W4k"/>
                             <constraint firstAttribute="bottom" secondItem="idZ-5x-zkc" secondAttribute="bottom" constant="16" id="xhv-0V-cTt"/>
+                            <constraint firstItem="28H-tH-OWQ" firstAttribute="centerX" secondItem="bkg-fA-qiw" secondAttribute="centerX" id="xpk-se-3S8"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -72,6 +77,7 @@
             </constraints>
             <size key="customSize" width="302" height="261"/>
             <connections>
+                <outlet property="actIndicator" destination="28H-tH-OWQ" id="4W2-M2-DJ0"/>
                 <outlet property="favouriteBtn" destination="gPl-ic-IRy" id="tJp-Y3-VDf"/>
                 <outlet property="photo" destination="bkg-fA-qiw" id="lrW-yV-Ze4"/>
                 <outlet property="shareBtn" destination="idZ-5x-zkc" id="J3h-FR-vio"/>

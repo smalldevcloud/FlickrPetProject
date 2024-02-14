@@ -16,6 +16,7 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var favouriteBtn: UIButton!
     @IBOutlet weak var shareBtn: UIButton!
+    @IBOutlet weak var actIndicator: UIActivityIndicatorView!
     
     private var downloadTask: URLSessionDownloadTask?
     var favouritPressed : (() -> ()) = {}
@@ -30,7 +31,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        self.actIndicator.isHidden = false
+        self.actIndicator.startAnimating()
     }
     
     private func downloadItemImage(imageURL: URL?) {
@@ -39,6 +41,8 @@ class CollectionViewCell: UICollectionViewCell {
             //          ссылка также используется как ключ для сохранения в кэш. И если в кэш уже сохранено, то картинка берётся оттуда, вместо повторной загрузки
             if let cachedImage = ImageCache.shared.object(forKey: urlOfImage.absoluteString as NSString){
                 self.photo!.image = cachedImage as? UIImage
+                self.actIndicator.isHidden = true
+                self.actIndicator.stopAnimating()
             } else {
                 //                если в кэше не нашлось - загрузка
                 let session = URLSession.shared
@@ -50,13 +54,16 @@ class CollectionViewCell: UICollectionViewCell {
                                 let imageToCache = image
                                 
                                 if let strongSelf = self, let imageView = strongSelf.photo {
+
                                     imageView.image = imageToCache
                                     //                                    после отображения картинки - сохранение в кэш
                                     ImageCache.shared.setObject(imageToCache, forKey: urlOfImage.absoluteString as NSString , cost: 1)
+                                    self?.actIndicator.isHidden = true
+                                    self?.actIndicator.stopAnimating()
                                 }
                             }
                         } else {
-                            //print("ERROR \(error?.localizedDescription)")
+                            print("can't download img: \(error?.localizedDescription)")
                         }
                     })
                 self.downloadTask!.resume()
@@ -67,7 +74,8 @@ class CollectionViewCell: UICollectionViewCell {
     override public func prepareForReuse() {
         //        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое, картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестерёнки
         self.downloadTask?.cancel()
-        photo.image = UIImage(systemName: "gear")
+        actIndicator.isHidden = false
+        actIndicator.startAnimating()
     }
     
     @IBAction func favoriteIcon(_ sender: Any) {
