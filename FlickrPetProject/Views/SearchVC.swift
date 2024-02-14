@@ -22,12 +22,12 @@ class SearchVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        отображение строки поиска юзеру
+        //        отображение строки поиска юзеру
         navigationController?.navigationBar.isHidden = false
-       
-//        footer в котором будет отображаться activity indicator пока подгружается след. результат
+        
+        //        footer в котором будет отображаться activity indicator пока подгружается след. результат
         collectionView.register(CollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
-                (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
+        (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
         
     }
     
@@ -47,10 +47,8 @@ class SearchVC: UIViewController {
                 self.showAlert(err: error)
                 self.footerView.stopAnimating()
             case .loading:
-                self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
-               
+                break
             }
-            
         }
     }
     
@@ -64,8 +62,10 @@ class SearchVC: UIViewController {
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if viewModel.pagesLoaded == 0 {
+            collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
             return 0
         } else {
+            collectionView.setEmptyMessage("")
             return viewModel.photos.count
         }
     }
@@ -75,7 +75,7 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         if !viewModel.photos.isEmpty {
-//            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку. как только ссылка будет установлена там сработает didSet, который начнёт загрузку
+            //            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку. как только ссылка будет установлена там сработает didSet, который начнёт загрузку
             cell.photoLink = viewModel.photos[indexPath.row].link
         }
         
@@ -86,7 +86,7 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         }
         
         cell.favouritPressed = {
-
+            
             self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
             
@@ -106,13 +106,11 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for index in indexPaths {
-//            prefetch используется для бесконечной загрузки фотографий. Как только долистано до предпоследней ячейки в коллекции - снова стартует вьюмодель за новой порцией фотографий
+            //            prefetch используется для бесконечной загрузки фотографий. Как только долистано до предпоследней ячейки в коллекции - снова стартует вьюмодель за новой порцией фотографий
             if index.row == viewModel.photos.count - 1 {
                 self.viewModel.start()
                 self.footerView.startAnimating()
             }
-            
-            
         }
     }
     
@@ -128,12 +126,12 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-            if kind == UICollectionView.elementKindSectionFooter {
-                let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
-                footer.addSubview(footerView)
-                footerView.frame = CGRect(x: 0, y: 0, width: collectionView.bounds.width, height: 50)
-                return footer
-            }
-            return UICollectionReusableView()
+        if kind == UICollectionView.elementKindSectionFooter {
+            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
+            footer.addSubview(footerView)
+            footerView.frame = CGRect(x: 0, y: 0, width: collectionView.bounds.width, height: 50)
+            return footer
         }
+        return UICollectionReusableView()
+    }
 }

@@ -8,9 +8,9 @@
 import UIKit
 
 class FavouriteVC: UIViewController {
-
+    
     @IBOutlet weak var collectionView: UICollectionView!
-    let viewModel = FavouritsViewModel() 
+    let viewModel = FavouritsViewModel()
     let defaults = UserDefaultsHelper()
     
     override func viewDidLoad() {
@@ -24,15 +24,14 @@ class FavouriteVC: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
         self.viewModel.start()
     }
-
+    
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
-
     }
     
     func bindViewModel() {
-//        описание состояний, которые изменяет вьюмодель
+        //        описание состояний, которые изменяет вьюмодель
         viewModel.state.bind{ newState in
             switch newState {
             case .successLinks:
@@ -40,26 +39,29 @@ class FavouriteVC: UIViewController {
             case let .error(error):
                 self.showAlert(err: error)
             case .loading:
-                self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
-                
+                break
             }
         }
     }
-
+    
     func showAlert(err: Error) {
         let ac = UIAlertController(title: "Error", message: err.localizedDescription, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(ac, animated: true)
     }
-
+    
 }
 
 extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
+        if viewModel.photos.count == 0 {
+            collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
             return viewModel.photos.count
-
+        } else {
+            collectionView.setEmptyMessage("")
+            return viewModel.photos.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -77,10 +79,8 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
         }
         
         cell.favouritPressed = {
-
             self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
-            
         }
         
         cell.sharePressed = {
@@ -105,14 +105,4 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
         newViewController.selectedPhoto = indexPath.row
         self.navigationController?.pushViewController(newViewController, animated: true)
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-////        метод для "бесконечного" скролла
-////        стартует вьюмодель как только collectionView подгружает последнюю ячейку
-//        for index in indexPaths {
-//            if index.row == viewModel.photos.count - 1 {
-//                    self.viewModel.start()
-//            }
-//        }
-//    }
 }

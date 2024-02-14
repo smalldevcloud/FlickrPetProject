@@ -26,11 +26,11 @@ class UserVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.navigationBar.isHidden = true
-  
+        
         //        footer в котором будет отображаться activity indicator пока подгружается след. результат
-                collectionView.register(CollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
-                        (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
-                
+        collectionView.register(CollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
+        (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
+        
     }
     
     func setupUI() {
@@ -51,7 +51,7 @@ class UserVC: UIViewController {
                 self.footerView.stopAnimating()
                 self.showAlert(err: error)
             case .loading:
-                self.collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
+                break
             }
         }
     }
@@ -67,8 +67,10 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if viewModel.pagesLoaded == 0 {
+            collectionView.setEmptyMessage(Texts.GeneralVCEnum.empty_data)
             return 0
         } else {
+            collectionView.setEmptyMessage("")
             return viewModel.photos.count
         }
     }
