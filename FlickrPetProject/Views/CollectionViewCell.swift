@@ -8,33 +8,31 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
-    
-    //    ячейка коллекции
-    
+
     static let identifier = "collectionCell"
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var favouriteBtn: UIButton!
     @IBOutlet weak var shareBtn: UIButton!
     @IBOutlet weak var actIndicator: UIActivityIndicatorView!
-    
+
     private var downloadTask: URLSessionDownloadTask?
-    var favouritPressed : (() -> ()) = {}
-    var sharePressed : (() -> ()) = {}
-    
+    var favouritPressed: (() -> Void ) = {}
+    var sharePressed: (() -> Void ) = {}
+
     var photoLink: URL? {
         didSet {
-            //                как только ссылка на фото установлена - качается фото
+            // как только ссылка на фото установлена - качается фото
             self.downloadItemImage(imageURL: self.photoLink)
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         self.actIndicator.isHidden = false
         self.actIndicator.startAnimating()
     }
-    
+
     private func downloadItemImage(imageURL: URL?) {
         //        скачивание фото по ссылке
         if let urlOfImage = imageURL {
@@ -49,15 +47,12 @@ class CollectionViewCell: UICollectionViewCell {
                 self.downloadTask = session.downloadTask(
                     with: urlOfImage as URL, completionHandler: { [weak self] url, response, error in
                         if error == nil, let url = url, let data = NSData(contentsOf: url), let image = UIImage(data: data as Data) {
-                            
-                            DispatchQueue.main.async() {
+                            DispatchQueue.main.async {
                                 let imageToCache = image
-                                
                                 if let strongSelf = self, let imageView = strongSelf.photo {
-
                                     imageView.image = imageToCache
-                                    //                                    после отображения картинки - сохранение в кэш
-                                    ImageCache.shared.setObject(imageToCache, forKey: urlOfImage.absoluteString as NSString , cost: 1)
+                                    // после отображения картинки - сохранение в кэш
+                                    ImageCache.shared.setObject(imageToCache, forKey: urlOfImage.absoluteString as NSString, cost: 1)
                                     self?.actIndicator.isHidden = true
                                     self?.actIndicator.stopAnimating()
                                 }
@@ -70,24 +65,24 @@ class CollectionViewCell: UICollectionViewCell {
             }
         }
     }
-    
+
     override public func prepareForReuse() {
-        //        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое, картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестерёнки
+        //        при переиспользовании использовании ячейки, пока картинка качается или достаётся из кэша можно использовать что-нибудь красивое,
+        //        картинку-плейсхолдер которую заменит загруженный файл. я использую не очень красивую картинку шестерёнки
         self.downloadTask?.cancel()
         actIndicator.isHidden = false
         actIndicator.startAnimating()
+        photo.image = nil
     }
-    
+
     @IBAction func favoriteIcon(_ sender: Any) {
         favouritPressed()
     }
-    
+
     @IBAction func shareBtnTapped(_ sender: Any) {
         sharePressed()
     }
-    
-    
-    
+
     deinit {
         //    отмена загрузки, если объект уничножается
         self.downloadTask?.cancel()

@@ -18,11 +18,8 @@ extension UICollectionView {
         messageLabel.sizeToFit()
         self.backgroundView = messageLabel
     }
-    
+
     func restore() {
         self.backgroundView = nil
-        
     }
 }
-
-

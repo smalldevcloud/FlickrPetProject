@@ -17,21 +17,20 @@ extension UserViewModel {
 }
 
 class UserViewModel {
-    
+
     var state = Dynamic<UserVMState>(.loading)
     var photos = [FlickrDomainPhoto]()
     var pagesLoaded = 0
     var allPagesCount = 0
 
-    
     func start() {
-        
+
         if pagesLoaded <= allPagesCount {
 //            еcли загружено меньше страниц, чем их есть - запрос в сеть за новой
             Networker.shared.getPhotos(forPage: pagesLoaded+1, onResponse: { [weak self] result in
                 //            нетворкер делает запрос за фотографиями, и в случае успеха объекты преобразуются в более удобные для использования  и сохраняется во вьюмодели
                 switch result {
-                    
+
                 case let .failure(error):
                     self?.state.value = .error(error)
                 case let .success(response):
@@ -43,16 +42,14 @@ class UserViewModel {
                                 self?.pagesLoaded = response.photos.page
                                 self?.allPagesCount = response.photos.pages
                                 self?.state.value = .successLinks
-                            } else {
-                                
                             }
                         }
                     }
-                    
+
                     for item in response.photos.photo {
 //                        получение прямых ссылок на картинку для каждого фото
                         let newPhoto = item.toDomainObject()
-                        newPhoto.getLink(completionHandler: { [weak self] response in
+                        newPhoto.getLink(completionHandler: { response in
                             if response == true {
                                 counter += 1
                             } else {

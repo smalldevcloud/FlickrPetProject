@@ -8,6 +8,7 @@
 import Foundation
 
 extension FavouritsViewModel {
+
     enum FavouritsVMState {
         case loading
         case successLinks
@@ -20,28 +21,27 @@ class FavouritsViewModel {
     var photos = [FlickrDomainPhoto]()
     let defaults = UserDefaultsHelper()
 
-    
     func start() {
-        
+
         state.value = .loading
         var counter = 0 {
             didSet {
-//            счётчик полученных ссылок. пока все ссылки не получены - состояние вью не изменится
+                //            счётчик полученных ссылок. пока все ссылки не получены - состояние вью не изменится
                 if counter == defaults.array.count {
                     self.state.value = .successLinks
                 }
             }
         }
-        
+
         defaults.getIds()
         if !defaults.array.isEmpty {
-//            если массив избранных фото не пуст - создание домейн-объектов и получение ссылок по ним
+            //            если массив избранных фото не пуст - создание домейн-объектов и получение ссылок по ним
             photos.removeAll()
             for id in defaults.array {
-                
+
                 Networker.shared.getMediumSizeLinks(photoID: id, onResponse: { result in
                     let domainPhoto = FlickrDomainPhoto()
-                    
+
                     switch result {
                     case let .success(url):
                         domainPhoto.link = url
@@ -52,15 +52,12 @@ class FavouritsViewModel {
                     case let .failure(err):
                         self.state.value = .error(err)
                     }
-                    
-                    
                 })
             }
         } else {
-//            если избранных уже нет - обновление состояния вью
+            //            если избранных уже нет - обновление состояния вью
             photos.removeAll()
             self.state.value = .successLinks
-
         }
     }
 }
