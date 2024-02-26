@@ -11,7 +11,7 @@ extension UserViewModel {
     //    описания возможных состояний для этой вьюмодели (и впоследствии для вью)
     enum UserVMState {
         case loading
-        case successLinks
+        case successLinks(TransportObjectToView)
         case error(Error)
     }
 }
@@ -19,15 +19,11 @@ extension UserViewModel {
 class UserViewModel {
 
     var state = Dynamic<UserVMState>(.loading)
-    var photos = [FlickrDomainPhoto]()
-    var pagesLoaded = 0
-    var allPagesCount = 0
+    func start(loadedPagesFromView: Int, availablePages: Int) {
 
-    func start() {
-
-        if pagesLoaded <= allPagesCount {
+        if loadedPagesFromView <= availablePages {
 //            еcли загружено меньше страниц, чем их есть - запрос в сеть за новой
-            Networker.shared.getPhotos(forPage: pagesLoaded+1, onResponse: { [weak self] result in
+            Networker.shared.getPhotos(forPage: loadedPagesFromView+1, onResponse: { [weak self] result in
                 //            нетворкер делает запрос за фотографиями, и в случае успеха объекты преобразуются в более удобные для использования  и сохраняется во вьюмодели
                 switch result {
 
@@ -39,9 +35,10 @@ class UserViewModel {
                         didSet {
 //                            объекты не передаются дальше, пока для каждого фото из пачке не будет получена ссылка
                             if counter == tempDomainObjects.count {
-                                self?.pagesLoaded = response.photos.page
-                                self?.allPagesCount = response.photos.pages
-                                self?.state.value = .successLinks
+
+                                let transportObject = TransportObjectToView(arrOfPhotos: tempDomainObjects, allPages: response.photos.pages, loadedPages: response.photos.page)
+                                
+                                self?.state.value = .successLinks(transportObject)
                             }
                         }
                     }
@@ -56,8 +53,7 @@ class UserViewModel {
                                 print("==========error============")
                             }
                         })
-                        self?.photos.append(newPhoto)
-                        tempDomainObjects.append(item.toDomainObject())
+                        tempDomainObjects.append(newPhoto)
                     }
                 }
             })

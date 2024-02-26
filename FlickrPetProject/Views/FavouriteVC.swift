@@ -12,6 +12,7 @@ class FavouriteVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = FavouritsViewModel()
     let defaults = UserDefaultsHelper()
+    var photos = [FlickrDomainPhoto]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,12 +35,16 @@ class FavouriteVC: UIViewController {
         //        описание состояний, которые изменяет вьюмодель
         viewModel.state.bind { newState in
             switch newState {
-            case .successLinks:
+            case let .successLinks(transportObj):
+                for obj in transportObj.arrOfPhotos {
+                    self.photos.append(obj)
+                }
                 self.collectionView.reloadData()
             case let .error(error):
                 self.showAlert(err: error)
             case .loading:
-                break
+//                break
+                self.photos.removeAll()
             }
         }
     }
@@ -54,12 +59,12 @@ class FavouriteVC: UIViewController {
 extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if viewModel.photos.count == 0 {
+        if photos.count == 0 {
             collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
-            return viewModel.photos.count
+            return photos.count
         } else {
             collectionView.setEmptyMessage("")
-            return viewModel.photos.count
+            return photos.count
         }
     }
 
@@ -72,17 +77,17 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             for: indexPath
         ) as? CollectionViewCell else { return UICollectionViewCell() }
 
-        if !viewModel.photos.isEmpty {
-            cell.photoLink = viewModel.photos[indexPath.row].link
+        if !photos.isEmpty {
+            cell.photoLink = photos[indexPath.row].link
         }
-        if defaults.isInFavourite(id: viewModel.photos[indexPath.row].id) {
+        if defaults.isInFavourite(id: photos[indexPath.row].id) {
             cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
             cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
         }
 
         cell.favouritPressed = {
-            self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
+            self.defaults.addIdToUD(id: self.photos[indexPath.row].id)
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
         }
 
@@ -94,7 +99,7 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             self.present(activityViewController, animated: true, completion: nil)
         }
 
-        cell.titleLbl.text = viewModel.photos[indexPath.row].title
+        cell.titleLbl.text = photos[indexPath.row].title
         return cell
     }
 
@@ -104,7 +109,7 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let newViewController = ShowPhotoVC()
-        newViewController.photos = viewModel.photos
+        newViewController.photos = photos
         newViewController.selectedPhoto = indexPath.row
         self.navigationController?.pushViewController(newViewController, animated: true)
     }

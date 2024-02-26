@@ -10,21 +10,17 @@ import Foundation
 extension SearchViewModel {
     enum SearchVMState {
         case loading
-        case successPhotos
+        case successLinks(TransportObjectToView)
         case error(Error)
     }
 }
 
 class SearchViewModel {
     var state = Dynamic<SearchVMState>(.loading)
-    var photos = [FlickrDomainPhoto]()
-    var pagesLoaded = 0
-    var allPagesCount = 0
-    var textForSearch = ""
 
-    func start() {
-        if pagesLoaded <= allPagesCount {
-            Networker.shared.searchRequest(searchText: textForSearch, forPage: pagesLoaded+1, onResponse: { [weak self] result in
+    func start(loadedPagesFromView: Int, availablePages: Int, searchQuery: String) {
+        if loadedPagesFromView <= availablePages {
+            Networker.shared.searchRequest(searchText: searchQuery, forPage: loadedPagesFromView+1, onResponse: { [weak self] result in
                 // нетворкер делает запрос за фотографиями, и в случае успеха объекты преобразуются в более удобные для использования  и сохраняется во вьюмодели
                 switch result {
                 case let .failure(error):
@@ -35,9 +31,8 @@ class SearchViewModel {
                         didSet {
                             // объекты не передаются дальше, пока для каждого фото из пачки не будет получена ссылка
                             if counter == tempDomainObjects.count {
-                                self?.pagesLoaded = response.photos.page
-                                self?.allPagesCount = response.photos.pages
-                                self?.state.value = .successPhotos
+                                let transportObject = TransportObjectToView(arrOfPhotos: tempDomainObjects, allPages: response.photos.pages, loadedPages: response.photos.page)
+                                self?.state.value = .successLinks(transportObject)
                             }
                         }
                     }
@@ -54,19 +49,12 @@ class SearchViewModel {
                                 print("==========error============")
                             }
                         })
-                        self?.photos.append(newPhoto)
-                        tempDomainObjects.append(item.toDomainObject())
+                        tempDomainObjects.append(newPhoto)
                     }
                 }
             })
+        } else {
+            self.state.value = .error(ApiError(message: "Error in viewModel"))
         }
-    }
-
-    func clearForNewSearchQuery() {
-        //        убирает всё лишнее, чтобы грузить новые фото с нуля, не продолжая в старую выборку. вызывается если новый запрос отличается от старого
-        photos = []
-        pagesLoaded = 0
-        allPagesCount = 0
-        state.value = .loading
     }
 }

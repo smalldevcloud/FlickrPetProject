@@ -101,6 +101,12 @@ enum SizeLables: String, Decodable {
 
 }
 
+struct TransportObjectToView {
+    let arrOfPhotos: [FlickrDomainPhoto]
+    let allPages: Int
+    let loadedPages: Int
+}
+
 // собственная ошибка для удобства отображения пользователю
 struct ApiError: Error, LocalizedError {
     let message: String

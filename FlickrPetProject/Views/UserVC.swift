@@ -14,22 +14,21 @@ class UserVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = UserViewModel()
     let defaults = UserDefaultsHelper()
-    private let footerView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
+    var photos = [FlickrDomainPhoto]()
+    var pagesLoaded = 0
+    var allPagesCount = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         self.bindViewModel()
-        self.viewModel.start()
+        self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationController?.navigationBar.isHidden = true
-
-        //        footer в котором будет отображаться activity indicator пока подгружается след. результат
-        collectionView.register(CollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
-        (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
     }
 
     func setupUI() {
@@ -42,11 +41,15 @@ class UserVC: UIViewController {
         //        описание состояний, которые изменяет вьюмодель
         viewModel.state.bind { newState in
             switch newState {
-            case .successLinks:
-                self.footerView.stopAnimating()
+            case let .successLinks(transportObj):
+                self.pagesLoaded = transportObj.loadedPages
+                self.allPagesCount = transportObj.allPages
+                for obj in transportObj.arrOfPhotos {
+                    self.photos.append(obj)
+                }
                 self.collectionView.reloadData()
             case let .error(error):
-                self.footerView.stopAnimating()
+
                 self.showAlert(err: error)
             case .loading:
                 break
@@ -64,12 +67,12 @@ class UserVC: UIViewController {
 extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if viewModel.pagesLoaded == 0 {
+        if pagesLoaded == 0 {
             collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
             return 0
         } else {
             collectionView.setEmptyMessage("")
-            return viewModel.photos.count
+            return photos.count
         }
     }
 
@@ -78,10 +81,10 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell() }
-        if !viewModel.photos.isEmpty {
-            cell.photoLink = viewModel.photos[indexPath.row].link
+        if !photos.isEmpty {
+            cell.photoLink = photos[indexPath.row].link
         }
-        if defaults.isInFavourite(id: viewModel.photos[indexPath.row].id) {
+        if defaults.isInFavourite(id: photos[indexPath.row].id) {
             cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
             cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
@@ -89,7 +92,7 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
 
         cell.favouritPressed = {
 
-            self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
+            self.defaults.addIdToUD(id: self.photos[indexPath.row].id)
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
 
         }
@@ -104,7 +107,7 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
 
         }
 
-        cell.titleLbl.text = viewModel.photos[indexPath.row].title
+        cell.titleLbl.text = photos[indexPath.row].title
         return cell
     }
 
@@ -114,7 +117,7 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let newViewController = ShowPhotoVC()
-        newViewController.photos = viewModel.photos
+        newViewController.photos = photos
         newViewController.selectedPhoto = indexPath.row
         self.navigationController?.pushViewController(newViewController, animated: true)
     }
@@ -122,9 +125,9 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         //        метод для "бесконечного" скролла
         //        стартует вьюмодель как только collectionView подгружает последнюю ячейку
-        for index in indexPaths where index.row == viewModel.photos.count - 1 {
-                self.viewModel.start()
-                self.footerView.startAnimating()
+        for index in indexPaths where index.row == photos.count - 1 {
+            self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount)
+
         }
     }
 }

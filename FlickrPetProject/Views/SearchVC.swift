@@ -12,8 +12,11 @@ class SearchVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = SearchViewModel()
     let defaults = UserDefaultsHelper()
-    private let footerView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
-
+    var photos = [FlickrDomainPhoto]()
+    var pagesLoaded = 0
+    var allPagesCount = 0
+    var textForSearch = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
@@ -24,11 +27,6 @@ class SearchVC: UIViewController {
         super.viewDidAppear(animated)
         //        отображение строки поиска юзеру
         navigationController?.navigationBar.isHidden = false
-
-        //        footer в котором будет отображаться activity indicator пока подгружается след. результат
-        collectionView.register(CollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
-        (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.footerReferenceSize = CGSize(width: collectionView.bounds.width, height: 50)
-
     }
 
     func setupUI() {
@@ -40,13 +38,17 @@ class SearchVC: UIViewController {
     func bindViewModel() {
         viewModel.state.bind { newState in
             switch newState {
-            case .successPhotos:
-                self.footerView.stopAnimating()
+            case let .successLinks(transportObj):
+                self.pagesLoaded = transportObj.loadedPages
+                self.allPagesCount = transportObj.allPages
+                for obj in transportObj.arrOfPhotos {
+                    self.photos.append(obj)
+                }
                 self.collectionView.reloadData()
             case let .error(error):
                 self.showAlert(err: error)
-                self.footerView.stopAnimating()
             case .loading:
+//                self.clearForNewSearchQuery()
                 break
             }
         }
@@ -61,12 +63,12 @@ class SearchVC: UIViewController {
 
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if viewModel.pagesLoaded == 0 {
+        if pagesLoaded == 0 {
             collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
             return 0
         } else {
             collectionView.setEmptyMessage("")
-            return viewModel.photos.count
+            return photos.count
         }
     }
 
@@ -75,23 +77,21 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell() }
 
-        if !viewModel.photos.isEmpty {
+        if !photos.isEmpty {
 //            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку.
 //            как только ссылка будет установлена там сработает didSet, который начнёт загрузку
-            cell.photoLink = viewModel.photos[indexPath.row].link
+            cell.photoLink = photos[indexPath.row].link
         }
 
-        if defaults.isInFavourite(id: viewModel.photos[indexPath.row].id) {
+        if defaults.isInFavourite(id: photos[indexPath.row].id) {
             cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
             cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
         }
 
         cell.favouritPressed = {
-
-            self.defaults.addIdToUD(id: self.viewModel.photos[indexPath.row].id)
+            self.defaults.addIdToUD(id: self.photos[indexPath.row].id)
             self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
-
         }
 
         cell.sharePressed = {
@@ -102,23 +102,23 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
             self.present(activityViewController, animated: true, completion: nil)
         }
 
-        cell.titleLbl.text = viewModel.photos[indexPath.row].title
+        cell.titleLbl.text = photos[indexPath.row].title
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for index in indexPaths {
             //            prefetch используется для бесконечной загрузки фотографий. Как только долистано до предпоследней ячейки в коллекции - снова стартует вьюмодель за новой порцией фотографий
-            if index.row == viewModel.photos.count - 1 {
-                self.viewModel.start()
-                self.footerView.startAnimating()
+            if index.row == photos.count - 1 {
+                self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount, searchQuery: textForSearch)
+
             }
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let newViewController = ShowPhotoVC()
-        newViewController.photos = viewModel.photos
+        newViewController.photos = photos
         newViewController.selectedPhoto = indexPath.row
         self.navigationController?.pushViewController(newViewController, animated: true)
     }
@@ -126,14 +126,11 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
     }
-
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionView.elementKindSectionFooter {
-            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
-            footer.addSubview(footerView)
-            footerView.frame = CGRect(x: 0, y: 0, width: collectionView.bounds.width, height: 50)
-            return footer
-        }
-        return UICollectionReusableView()
+    
+    func clearForNewSearchQuery() {
+        //        убирает всё лишнее, чтобы грузить новые фото с нуля, не продолжая в старую выборку. вызывается если новый запрос отличается от старого
+        photos = []
+        pagesLoaded = 0
+        allPagesCount = 0
     }
 }

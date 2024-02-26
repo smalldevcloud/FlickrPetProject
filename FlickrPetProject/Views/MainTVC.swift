@@ -46,12 +46,12 @@ class MainTVC: UITabBarController, UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchRequest = searchBar.text else { return }
         //        если текст тот же, что был до этого - просто запуск вьюмодели. Если текст другой - то перед запуском обнуление загруженных страницы и указание нового текста для поиска
-        if searchRequest == searchVC.viewModel.textForSearch {
-            searchVC.viewModel.start()
+        if searchRequest == searchVC.textForSearch {
+            searchVC.viewModel.start(loadedPagesFromView: searchVC.pagesLoaded, availablePages: searchVC.allPagesCount, searchQuery: searchVC.textForSearch)
         } else {
-            searchVC.viewModel.textForSearch = searchRequest
-            searchVC.viewModel.clearForNewSearchQuery()
-            searchVC.viewModel.start()
+            searchVC.textForSearch = searchRequest
+            searchVC.clearForNewSearchQuery()
+            searchVC.viewModel.start(loadedPagesFromView: searchVC.pagesLoaded, availablePages: searchVC.allPagesCount, searchQuery: searchVC.textForSearch)
         }
 
         searchBar.endEditing(true)
