@@ -30,6 +30,7 @@
 		61C7892A2B31FAF700943CDF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C789292B31FAF700943CDF /* Extensions.swift */; };
 		61D531F02B5D52B600C72E79 /* ShowPhotoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D531EE2B5D52B600C72E79 /* ShowPhotoVC.swift */; };
 		61D531F12B5D52B600C72E79 /* ShowPhotoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61D531EF2B5D52B600C72E79 /* ShowPhotoVC.xib */; };
+		61D9AF222B90D52C00E07597 /* FlickrWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D9AF212B90D52C00E07597 /* FlickrWorker.swift */; };
 		61DFCE822B2DEBC10013F856 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DFCE802B2DEBC10013F856 /* SearchVC.swift */; };
 		61DFCE832B2DEBC10013F856 /* SearchVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61DFCE812B2DEBC10013F856 /* SearchVC.xib */; };
 		61DFCE852B2DEC420013F856 /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DFCE842B2DEC420013F856 /* Texts.swift */; };
@@ -62,6 +63,7 @@
 		61C789292B31FAF700943CDF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		61D531EE2B5D52B600C72E79 /* ShowPhotoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPhotoVC.swift; sourceTree = "<group>"; };
 		61D531EF2B5D52B600C72E79 /* ShowPhotoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShowPhotoVC.xib; sourceTree = "<group>"; };
+		61D9AF212B90D52C00E07597 /* FlickrWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrWorker.swift; sourceTree = "<group>"; };
 		61DFCE802B2DEBC10013F856 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		61DFCE812B2DEBC10013F856 /* SearchVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchVC.xib; sourceTree = "<group>"; };
 		61DFCE842B2DEC420013F856 /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				61C789222B31B3D400943CDF /* Networker.swift */,
 				610807BC2B51A98B007821B1 /* ImageCache.swift */,
 				616149FC2B627BC800458888 /* UserDefaultsHelper.swift */,
+				61D9AF212B90D52C00E07597 /* FlickrWorker.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61D9AF222B90D52C00E07597 /* FlickrWorker.swift in Sources */,
 				61C7891D2B31A7C800943CDF /* UserVC.swift in Sources */,
 				610807BD2B51A98B007821B1 /* ImageCache.swift in Sources */,
 				616149FF2B62C23600458888 /* FavouritsViewModel.swift in Sources */,

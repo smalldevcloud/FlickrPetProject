@@ -44,31 +44,6 @@ final class Networker {
         return request
     }
 
-    func getPhotos(forPage: Int, onResponse: @escaping (Result<FlickrJSONResponse, Error>) -> Void) {
-
-        let request = buildRequest(apiMethod: .photos, param: "", page: forPage)
-//        функция делает запрос списка фотографий
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard let dataResponse = data,
-                  error == nil else {
-                onResponse(.failure(error ?? ApiError(message: "Response error")))
-                return }
-
-            do {
-                let decoder = JSONDecoder()
-                let model = try decoder.decode(FlickrJSONResponse.self, from: dataResponse)
-
-                DispatchQueue.main.async {
-                    onResponse(.success(model))
-                }
-
-            } catch let parsingError {
-                onResponse(.failure(parsingError))
-            }
-        }
-        task.resume()
-    }
-
     func getMediumSizeLinks(photoID: String, onResponse: @escaping (Result<URL, Error>) -> Void) {
 //        функция получает ссылки на разные размеры конкретной фотографии
         let request = buildRequest(apiMethod: .getSizes, param: photoID, page: 0)
@@ -102,8 +77,13 @@ final class Networker {
         task.resume()
     }
 
-    func searchRequest(searchText: String, forPage: Int, onResponse: @escaping (Result<FlickrJSONResponse, Error>) -> Void) {
-        let request = buildRequest(apiMethod: .search, param: searchText, page: forPage)
+    func searchRequest(searchText: String?, forPage: Int, onResponse: @escaping (Result<FlickrJSONResponse, Error>) -> Void) {
+        var request: URLRequest
+        if searchText == nil || searchText == "" {
+            request = buildRequest(apiMethod: .photos, param: searchText, page: forPage)
+        } else {
+            request = buildRequest(apiMethod: .search, param: searchText, page: forPage)
+        }
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard let dataResponse = data,
                   error == nil else {
