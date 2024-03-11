@@ -17,6 +17,17 @@ class UserVC: UIViewController {
     var photos = [FlickrDomainPhoto]()
     var pagesLoaded = 0
     var allPagesCount = 0
+    
+    var lastState = UserViewModel.UserVMState.loading {
+        didSet {
+            switch self.lastState {
+            default:
+                break
+//               self.collectionView.reloadData()
+            }
+            
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,18 +39,21 @@ class UserVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
-
     }
 
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.prefetchDataSource = self
+        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
+        collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
     }
 
     func bindViewModel() {
         //        описание состояний, которые изменяет вьюмодель
-        viewModel.state.bind { newState in
+        viewModel.state.bind { [weak self] newState in
+            guard let self else { return }
+            self.lastState = newState
             switch newState {
             case let .successLinks(transportObj):
                 self.pagesLoaded = transportObj.loadedPages
@@ -67,6 +81,12 @@ class UserVC: UIViewController {
 extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch self.lastState {
+        case let .successLinks(objects):
+            return objects.arrOfPhotos.count
+        default:
+            return 0
+        }
         if pagesLoaded == 0 {
             collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
             return 0
@@ -77,13 +97,12 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
-        collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell() }
         if !photos.isEmpty {
             cell.photoLink = photos[indexPath.row].link
         }
+        
+//        if photos[indexPath.row].isFavorite {
         if defaults.isInFavourite(id: photos[indexPath.row].id) {
             cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
@@ -129,5 +148,6 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
             self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount)
 
         }
+//        self.viewModel.needMorePhotos()
     }
 }
