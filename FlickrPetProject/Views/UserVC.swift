@@ -72,6 +72,11 @@ class UserVC: UIViewController {
         activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
         self.present(activityViewController, animated: true, completion: nil)
     }
+    
+    func favoutireAction(photoId: String, cellNumber: Int) {
+        self.defaults.addIdToUD(id: photoId)
+        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
+    }
 }
 
 extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
@@ -98,8 +103,7 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
                 cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
             }
             cell.favouritPressed = {
-                self.defaults.addIdToUD(id: stateObject.arrOfPhotos[indexPath.row].id)
-                self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
+                self.favoutireAction(photoId: stateObject.arrOfPhotos[indexPath.row].id, cellNumber: indexPath.row)
             }
             cell.sharePressed = {
                 guard let img = cell.photo.image else { return }

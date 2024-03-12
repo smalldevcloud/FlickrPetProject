@@ -69,6 +69,11 @@ class SearchVC: UIViewController {
         activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
         self.present(activityViewController, animated: true, completion: nil)
     }
+
+    func favoutireAction(photoId: String, cellNumber: Int) {
+        self.defaults.addIdToUD(id: photoId)
+        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
+    }
 }
 
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
@@ -99,8 +104,7 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         }
 
         cell.favouritPressed = {
-            self.defaults.addIdToUD(id: self.photos[indexPath.row].id)
-            self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
+            self.favoutireAction(photoId: self.photos[indexPath.row].id, cellNumber: indexPath.row)
         }
 
         cell.sharePressed = {
