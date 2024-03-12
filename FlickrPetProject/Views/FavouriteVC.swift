@@ -29,6 +29,8 @@ class FavouriteVC: UIViewController {
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
+        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
+        collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
     }
 
     func bindViewModel() {
@@ -69,9 +71,6 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
-        collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: CollectionViewCell.identifier,
             for: indexPath

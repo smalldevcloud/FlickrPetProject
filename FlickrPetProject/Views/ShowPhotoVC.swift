@@ -26,7 +26,8 @@ class ShowPhotoVC: UIViewController {
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self
-
+        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
+        collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
     }
 
     override func viewDidLayoutSubviews() {
@@ -54,8 +55,6 @@ extension ShowPhotoVC: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
-        collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell() }
         if !photos.isEmpty {
             //            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку. как только ссылка будет установлена там сработает didSet, который начнёт загрузку
