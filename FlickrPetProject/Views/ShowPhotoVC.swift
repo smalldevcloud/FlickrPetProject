@@ -43,7 +43,6 @@ class ShowPhotoVC: UIViewController {
         super.viewWillLayoutSubviews()
         guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout, let collectionView = collectionView else { return }
         flowLayout.itemSize = collectionView.bounds.size
-
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
     }
 }
@@ -72,12 +71,9 @@ extension ShowPhotoVC: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
 //        отвечает за то, чтобы при скролле не появлялось смещение фотографий
         guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-
         let pageWidth = scrollView.bounds.size.width + flowLayout.minimumInteritemSpacing
-
         let currentPageNumber = round(scrollView.contentOffset.x / pageWidth)
         let maxPageNumber = CGFloat(collectionView?.numberOfItems(inSection: 0) ?? 0)
-
         var pageNumber = round(targetContentOffset.pointee.x / pageWidth)
         pageNumber = max(0, currentPageNumber - 1, pageNumber)
         pageNumber = min(maxPageNumber, currentPageNumber + 1, pageNumber)

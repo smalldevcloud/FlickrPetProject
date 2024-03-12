@@ -61,6 +61,14 @@ class SearchVC: UIViewController {
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alertController, animated: true)
     }
+    
+    func sharePhoto(img: UIImage) {
+        let imageToShare = [img]
+        let activityViewController = UIActivityViewController(activityItems: imageToShare as [Any], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+        self.present(activityViewController, animated: true, completion: nil)
+    }
 }
 
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
@@ -96,11 +104,8 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         }
 
         cell.sharePressed = {
-            let imageToShare = [ cell.photo.image ]
-            let activityViewController = UIActivityViewController(activityItems: imageToShare as [Any], applicationActivities: nil)
-            activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
-            activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
-            self.present(activityViewController, animated: true, completion: nil)
+            guard let img = cell.photo.image else { return }
+            self.sharePhoto(img: img)
         }
 
         cell.titleLbl.text = photos[indexPath.row].title
