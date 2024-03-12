@@ -14,18 +14,12 @@ class UserVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = UserViewModel()
     let defaults = UserDefaultsHelper()
-    var photos = [FlickrDomainPhoto]()
-    var pagesLoaded = 0
-    var allPagesCount = 0
-    
     var lastState = UserViewModel.UserVMState.loading {
         didSet {
             switch self.lastState {
             default:
-                break
-//               self.collectionView.reloadData()
+               self.collectionView.reloadData()
             }
-            
         }
     }
 
@@ -33,9 +27,9 @@ class UserVC: UIViewController {
         super.viewDidLoad()
         self.setupUI()
         self.bindViewModel()
-        self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount)
+        self.viewModel.start()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
@@ -56,14 +50,8 @@ class UserVC: UIViewController {
             self.lastState = newState
             switch newState {
             case let .successLinks(transportObj):
-                self.pagesLoaded = transportObj.loadedPages
-                self.allPagesCount = transportObj.allPages
-                for obj in transportObj.arrOfPhotos {
-                    self.photos.append(obj)
-                }
-                self.collectionView.reloadData()
+                lastState = UserViewModel.UserVMState.successLinks(transportObj)
             case let .error(error):
-
                 self.showAlert(err: error)
             case .loading:
                 break
@@ -87,47 +75,38 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         default:
             return 0
         }
-        if pagesLoaded == 0 {
-            collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
-            return 0
-        } else {
-            collectionView.setEmptyMessage("")
-            return photos.count
-        }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell() }
-        if !photos.isEmpty {
-            cell.photoLink = photos[indexPath.row].link
+        switch lastState {
+        case let.successLinks(stateObject):
+            if !stateObject.arrOfPhotos.isEmpty {
+                cell.photoLink = stateObject.arrOfPhotos[indexPath.row].link
+            }
+            if defaults.isInFavourite(id: stateObject.arrOfPhotos[indexPath.row].id) {
+                cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            } else {
+                cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
+            }
+            cell.favouritPressed = {
+                self.defaults.addIdToUD(id: stateObject.arrOfPhotos[indexPath.row].id)
+                self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
+            }
+            cell.sharePressed = {
+                let imageToShare = [cell.photo.image]
+                let activityViewController = UIActivityViewController(activityItems: imageToShare as [Any], applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+                activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+                self.present(activityViewController, animated: true, completion: nil)
+            }
+            cell.titleLbl.text = stateObject.arrOfPhotos[indexPath.row].title
+            return cell
+        case .loading:
+            return UICollectionViewCell()
+        case .error(_):
+            return UICollectionViewCell()
         }
-        
-//        if photos[indexPath.row].isFavorite {
-        if defaults.isInFavourite(id: photos[indexPath.row].id) {
-            cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
-        } else {
-            cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
-        }
-
-        cell.favouritPressed = {
-
-            self.defaults.addIdToUD(id: self.photos[indexPath.row].id)
-            self.collectionView.reloadItems(at: [IndexPath(row: indexPath.row, section: 0)])
-
-        }
-
-        cell.sharePressed = {
-
-            let imageToShare = [cell.photo.image]
-            let activityViewController = UIActivityViewController(activityItems: imageToShare as [Any], applicationActivities: nil)
-            activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
-            activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
-            self.present(activityViewController, animated: true, completion: nil)
-
-        }
-
-        cell.titleLbl.text = photos[indexPath.row].title
-        return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -136,18 +115,30 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let newViewController = ShowPhotoVC()
-        newViewController.photos = photos
-        newViewController.selectedPhoto = indexPath.row
-        self.navigationController?.pushViewController(newViewController, animated: true)
+        switch lastState {
+        case let.successLinks(stateObject):
+            newViewController.photos = stateObject.arrOfPhotos
+            newViewController.selectedPhoto = indexPath.row
+            self.navigationController?.pushViewController(newViewController, animated: true)
+        case .loading:
+            break
+        case .error(_):
+            break
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         //        метод для "бесконечного" скролла
         //        стартует вьюмодель как только collectionView подгружает последнюю ячейку
-        for index in indexPaths where index.row == photos.count - 1 {
-            self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount)
-
+        switch lastState {
+        case let.successLinks(stateObject):
+            for index in indexPaths where index.row == stateObject.arrOfPhotos.count - 1 {
+                self.viewModel.start()
+            }
+        case .loading:
+            break
+        case .error(_):
+            break
         }
-//        self.viewModel.needMorePhotos()
     }
 }

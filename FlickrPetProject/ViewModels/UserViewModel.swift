@@ -20,15 +20,23 @@ class UserViewModel {
 
     var state = Dynamic<UserVMState>(.loading)
     let flickrWorker = FlickrWorker()
+    var photos = [FlickrDomainPhoto]()
+    var pagesLoaded = 0
+    var allPagesCount = 0
 
-    func start(loadedPagesFromView: Int, availablePages: Int) {
-
-        if loadedPagesFromView <= availablePages {
+    func start() {
+        if pagesLoaded <= allPagesCount {
 //            еcли загружено меньше страниц, чем их есть - запрос в сеть за новой
-            flickrWorker.getPhotos(text: nil, forPage: loadedPagesFromView, onResponse: { [weak self] result in
+            flickrWorker.getPhotos(text: nil, forPage: pagesLoaded+1, onResponse: { [weak self] result in
                 switch result {
                 case let .success(transportObj):
-                    self?.state.value = .successLinks(transportObj)
+                    self?.pagesLoaded = transportObj.loadedPages
+                    self?.allPagesCount = transportObj.allPages
+                    for photo in transportObj.arrOfPhotos {
+                        self?.photos.append(photo)
+                    }
+                    let newTransportObj = TransportObjectToView(arrOfPhotos: self?.photos ?? [], allPages: self?.allPagesCount ?? 0, loadedPages: self?.pagesLoaded ?? 0)
+                    self?.state.value = .successLinks(newTransportObj)
                 case let .failure(error):
                     self?.state.value = .error(error)
                 }
