@@ -22,7 +22,6 @@ class FavouriteVC: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = true
         self.viewModel.start()
     }
 
@@ -119,6 +118,6 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
         let newViewController = ShowPhotoVC()
         newViewController.photos = photos
         newViewController.selectedPhoto = indexPath.row
-        self.navigationController?.pushViewController(newViewController, animated: true)
+        self.present(newViewController, animated: true)
     }
 }

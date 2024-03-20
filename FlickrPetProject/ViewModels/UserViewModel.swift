@@ -27,7 +27,7 @@ class UserViewModel {
 
     func start() {
         if pagesLoaded <= allPagesCount {
-//            еcли загружено меньше страниц, чем их есть - запрос в сеть за новой
+            //            еcли загружено меньше страниц, чем их есть - запрос в сеть за новой
             flickrWorker.getPhotos(text: nil, forPage: pagesLoaded+1, onResponse: { [weak self] result in
                 switch result {
                 case let .success(transportObj):
@@ -49,18 +49,17 @@ class UserViewModel {
     }
 
     func userDefaultsAction(id: String) {
-//        если нажимается кнопка избранного, то по id ищет фото в массиве. если не было в избранном - добавляет, если было - убирает. обновляет объект самого фото и отправляет массив снова во вью новым стейтом
+        //        если нажимается кнопка избранного, то по id ищет фото в массиве. если не было в избранном - добавляет, если было - убирает.
+        //        обновляет объект самого фото и отправляет массив снова во вью новым стейтом
         defaults.addIdToUD(id: id)
-        for photo in photos {
-            if photo.id == id {
-                if defaults.isInFavourite(id: id) {
-                    photo.isFavorite = true
-                } else {
-                    photo.isFavorite = false
-                }
+        for photo in photos where photo.id == id {
+            if defaults.isInFavourite(id: id) {
+                photo.isFavorite = true
+            } else {
+                photo.isFavorite = false
             }
         }
-        let newTransportObj = TransportObjectToView(arrOfPhotos: photos, allPages: allPagesCount , loadedPages: pagesLoaded)
+        let newTransportObj = TransportObjectToView(arrOfPhotos: photos, allPages: allPagesCount, loadedPages: pagesLoaded)
         state.value = .successLinks(newTransportObj)
     }
 }

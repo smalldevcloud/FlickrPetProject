@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchVC: UIViewController {
+class SearchVC: UIViewController, UISearchBarDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = SearchViewModel()
@@ -15,18 +15,13 @@ class SearchVC: UIViewController {
     var photos = [FlickrDomainPhoto]()
     var pagesLoaded = 0
     var allPagesCount = 0
+    let searchBar = UISearchBar()
     var textForSearch = ""
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         self.bindViewModel()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //        отображение строки поиска юзеру
-        navigationController?.navigationBar.isHidden = false
     }
 
     func setupUI() {
@@ -35,6 +30,14 @@ class SearchVC: UIViewController {
         collectionView.prefetchDataSource = self
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: CollectionViewCell.identifier)
+
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barStyle = .default
+        navigationController?.navigationBar.tintColor = .cyan
+
+        searchBar.showsCancelButton = true
+        navigationItem.titleView  = searchBar
+        searchBar.delegate = self
     }
 
     func bindViewModel() {
@@ -88,9 +91,9 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell() }
 
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell()
+        }
         if !photos.isEmpty {
 //            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку.
 //            как только ссылка будет установлена там сработает didSet, который начнёт загрузку
@@ -130,12 +133,31 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
         let newViewController = ShowPhotoVC()
         newViewController.photos = photos
         newViewController.selectedPhoto = indexPath.row
-        self.navigationController?.pushViewController(newViewController, animated: true)
+        self.present(newViewController, animated: true)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
     }
+    
+        func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+            guard let searchRequest = searchBar.text else { return }
+            //        если текст тот же, что был до этого - просто запуск вьюмодели. Если текст другой - то перед запуском обнуление загруженных страницы и указание нового текста для поиска
+            if searchRequest == textForSearch {
+                viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount, searchQuery: textForSearch)
+            } else {
+                textForSearch = searchRequest
+                clearForNewSearchQuery()
+                viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount, searchQuery: textForSearch)
+            }
+    
+            searchBar.endEditing(true)
+        }
+    
+        func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+            //        прячет клавиатуру по нажатию "cancel" в searchBar
+            searchBar.endEditing(true)
+        }
     
     func clearForNewSearchQuery() {
         //        убирает всё лишнее, чтобы грузить новые фото с нуля, не продолжая в старую выборку. вызывается если новый запрос отличается от старого

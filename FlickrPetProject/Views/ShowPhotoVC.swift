@@ -17,12 +17,6 @@ class ShowPhotoVC: UIViewController {
         self.setupUI()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        отображение строки поиска юзеру
-        navigationController?.navigationBar.isHidden = false
-    }
-
     func setupUI() {
         collectionView.delegate = self
         collectionView.dataSource = self

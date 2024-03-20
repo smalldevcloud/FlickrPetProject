@@ -16,9 +16,11 @@ class UserVC: UIViewController {
     var lastState = UserViewModel.UserVMState.loading {
         didSet {
             switch self.lastState {
-            default:
+            case .successLinks:
                 print("new state loaded")
                self.collectionView.reloadData()
+            default:
+                break
             }
         }
     }
@@ -28,11 +30,6 @@ class UserVC: UIViewController {
         self.setupUI()
         self.bindViewModel()
         self.viewModel.start()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = true
     }
 
     func setupUI() {
@@ -76,8 +73,6 @@ class UserVC: UIViewController {
     
     func favoutireAction(photoId: String, cellNumber: Int) {
         self.viewModel.userDefaultsAction(id: photoId)
-    
-//        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
     }
 }
 
@@ -115,7 +110,7 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
             return cell
         case .loading:
             return UICollectionViewCell()
-        case .error(_):
+        case .error:
             return UICollectionViewCell()
         }
     }
@@ -130,7 +125,8 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         case let.successLinks(stateObject):
             newViewController.photos = stateObject.arrOfPhotos
             newViewController.selectedPhoto = indexPath.row
-            self.navigationController?.pushViewController(newViewController, animated: true)
+            self.present(newViewController, animated: true)
+//            newNavController.pushViewController(newViewController, animated: true)
         case .loading:
             break
         case .error(_):
