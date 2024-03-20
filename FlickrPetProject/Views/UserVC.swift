@@ -13,11 +13,11 @@ class UserVC: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = UserViewModel()
-    let defaults = UserDefaultsHelper()
     var lastState = UserViewModel.UserVMState.loading {
         didSet {
             switch self.lastState {
             default:
+                print("new state loaded")
                self.collectionView.reloadData()
             }
         }
@@ -55,6 +55,7 @@ class UserVC: UIViewController {
                 self.showAlert(err: error)
             case .loading:
                 break
+            
             }
         }
     }
@@ -74,8 +75,9 @@ class UserVC: UIViewController {
     }
     
     func favoutireAction(photoId: String, cellNumber: Int) {
-        self.defaults.addIdToUD(id: photoId)
-        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
+        self.viewModel.userDefaultsAction(id: photoId)
+    
+//        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
     }
 }
 
@@ -97,7 +99,7 @@ extension UserVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
             if !stateObject.arrOfPhotos.isEmpty {
                 cell.photoLink = stateObject.arrOfPhotos[indexPath.row].link
             }
-            if defaults.isInFavourite(id: stateObject.arrOfPhotos[indexPath.row].id) {
+            if stateObject.arrOfPhotos[indexPath.row].isFavorite {
                 cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
             } else {
                 cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
