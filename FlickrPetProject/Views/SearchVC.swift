@@ -8,15 +8,23 @@
 import UIKit
 
 class SearchVC: UIViewController, UISearchBarDelegate {
-
+// этот класс отвечает за отображение фотографий по поисковому запросу
+    
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = SearchViewModel()
-    let defaults = UserDefaultsHelper()
-    var photos = [FlickrDomainPhoto]()
-    var pagesLoaded = 0
-    var allPagesCount = 0
     let searchBar = UISearchBar()
     var textForSearch = ""
+    var lastState = SearchViewModel.SearchVMState.loading {
+        didSet {
+            switch self.lastState {
+            case .successLinks:
+                print("new state loaded")
+               self.collectionView.reloadData()
+            default:
+                break
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,19 +49,15 @@ class SearchVC: UIViewController, UISearchBarDelegate {
     }
 
     func bindViewModel() {
-        viewModel.state.bind { newState in
+        viewModel.state.bind { [weak self] newState in
+            guard let self else { return }
+            self.lastState = newState
             switch newState {
             case let .successLinks(transportObj):
-                self.pagesLoaded = transportObj.loadedPages
-                self.allPagesCount = transportObj.allPages
-                for obj in transportObj.arrOfPhotos {
-                    self.photos.append(obj)
-                }
-                self.collectionView.reloadData()
+                lastState = SearchViewModel.SearchVMState.successLinks(transportObj)
             case let .error(error):
                 self.showAlert(err: error)
             case .loading:
-//                self.clearForNewSearchQuery()
                 break
             }
         }
@@ -64,7 +68,7 @@ class SearchVC: UIViewController, UISearchBarDelegate {
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alertController, animated: true)
     }
-    
+
     func sharePhoto(img: UIImage) {
         let imageToShare = [img]
         let activityViewController = UIActivityViewController(activityItems: imageToShare as [Any], applicationActivities: nil)
@@ -74,19 +78,18 @@ class SearchVC: UIViewController, UISearchBarDelegate {
     }
 
     func favoutireAction(photoId: String, cellNumber: Int) {
-        self.defaults.addIdToUD(id: photoId)
-        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
+        self.viewModel.userDefaultsAction(id: photoId)
     }
 }
 
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if pagesLoaded == 0 {
-            collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
+        switch self.lastState {
+        case let .successLinks(objects):
+            return objects.arrOfPhotos.count
+        default:
             return 0
-        } else {
-            collectionView.setEmptyMessage("")
-            return photos.count
         }
     }
 
@@ -94,75 +97,80 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
 
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else { return UICollectionViewCell()
         }
-        if !photos.isEmpty {
-//            если массив фотографий не пуст - ячейке сообщается ссылка на загрузку.
-//            как только ссылка будет установлена там сработает didSet, который начнёт загрузку
-            cell.photoLink = photos[indexPath.row].link
+        switch lastState {
+        case let.successLinks(stateObject):
+            if !stateObject.arrOfPhotos.isEmpty {
+                cell.photoLink = stateObject.arrOfPhotos[indexPath.row].link
+            }
+            if stateObject.arrOfPhotos[indexPath.row].isFavorite {
+                cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            } else {
+                cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
+            }
+            cell.favouritPressed = {
+                self.favoutireAction(photoId: stateObject.arrOfPhotos[indexPath.row].id, cellNumber: indexPath.row)
+            }
+            cell.sharePressed = {
+                guard let img = cell.photo.image else { return }
+                self.sharePhoto(img: img)
+            }
+            cell.titleLbl.text = stateObject.arrOfPhotos[indexPath.row].title
+            return cell
+        case .loading:
+            return UICollectionViewCell()
+        case .error:
+            return UICollectionViewCell()
         }
-
-        if defaults.isInFavourite(id: photos[indexPath.row].id) {
-            cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
-        } else {
-            cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
-        }
-
-        cell.favouritPressed = {
-            self.favoutireAction(photoId: self.photos[indexPath.row].id, cellNumber: indexPath.row)
-        }
-
-        cell.sharePressed = {
-            guard let img = cell.photo.image else { return }
-            self.sharePhoto(img: img)
-        }
-
-        cell.titleLbl.text = photos[indexPath.row].title
-        return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        for index in indexPaths {
-            //            prefetch используется для бесконечной загрузки фотографий. Как только долистано до предпоследней ячейки в коллекции - снова стартует вьюмодель за новой порцией фотографий
-            if index.row == photos.count - 1 {
-                self.viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount, searchQuery: textForSearch)
-
+        switch lastState {
+        case let.successLinks(stateObject):
+            for index in indexPaths where index.row == stateObject.arrOfPhotos.count - 1 {
+                self.viewModel.start(searchQuery: textForSearch)
             }
+        case .loading:
+            break
+        case .error(_):
+            break
         }
+        
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let newViewController = ShowPhotoVC()
-        newViewController.photos = photos
-        newViewController.selectedPhoto = indexPath.row
-        self.present(newViewController, animated: true)
+        switch lastState {
+        case let.successLinks(stateObject):
+            newViewController.photos = stateObject.arrOfPhotos
+            newViewController.selectedPhoto = indexPath.row
+            self.present(newViewController, animated: true)
+//            newNavController.pushViewController(newViewController, animated: true)
+        case .loading:
+            break
+        case .error(_):
+            break
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width-32, height: self.view.frame.width)
     }
-    
+
         func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
             guard let searchRequest = searchBar.text else { return }
             //        если текст тот же, что был до этого - просто запуск вьюмодели. Если текст другой - то перед запуском обнуление загруженных страницы и указание нового текста для поиска
             if searchRequest == textForSearch {
-                viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount, searchQuery: textForSearch)
+                viewModel.start(searchQuery: textForSearch)
             } else {
                 textForSearch = searchRequest
-                clearForNewSearchQuery()
-                viewModel.start(loadedPagesFromView: pagesLoaded, availablePages: allPagesCount, searchQuery: textForSearch)
+                viewModel.clearForNewSearchQuery()
+                viewModel.start(searchQuery: textForSearch)
             }
-    
             searchBar.endEditing(true)
         }
-    
+
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
             //        прячет клавиатуру по нажатию "cancel" в searchBar
             searchBar.endEditing(true)
         }
-    
-    func clearForNewSearchQuery() {
-        //        убирает всё лишнее, чтобы грузить новые фото с нуля, не продолжая в старую выборку. вызывается если новый запрос отличается от старого
-        photos = []
-        pagesLoaded = 0
-        allPagesCount = 0
-    }
 }

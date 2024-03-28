@@ -52,7 +52,6 @@ class UserVC: UIViewController {
                 self.showAlert(err: error)
             case .loading:
                 break
-            
             }
         }
     }
