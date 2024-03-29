@@ -8,11 +8,20 @@
 import UIKit
 
 class FavouriteVC: UIViewController {
-
+// этот класс отвечает за отображение избранных фотографий
     @IBOutlet weak var collectionView: UICollectionView!
     let viewModel = FavouritsViewModel()
-    let defaults = UserDefaultsHelper()
-    var photos = [FlickrDomainPhoto]()
+    var lastState = FavouritsViewModel.FavouritsVMState.loading {
+        didSet {
+            switch self.lastState {
+            case .successLinks:
+                print("new state loaded")
+               self.collectionView.reloadData()
+            default:
+                break
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,18 +43,14 @@ class FavouriteVC: UIViewController {
 
     func bindViewModel() {
         //        описание состояний, которые изменяет вьюмодель
-        viewModel.state.bind { newState in
+        viewModel.state.bind { [weak self] newState in
             switch newState {
             case let .successLinks(transportObj):
-                for obj in transportObj.arrOfPhotos {
-                    self.photos.append(obj)
-                }
-                self.collectionView.reloadData()
+                self?.lastState = FavouritsViewModel.FavouritsVMState.successLinks(transportObj)
             case let .error(error):
-                self.showAlert(err: error)
+                self?.showAlert(err: error)
             case .loading:
-//                break
-                self.photos.removeAll()
+                break
             }
         }
     }
@@ -65,20 +70,21 @@ class FavouriteVC: UIViewController {
     }
 
     func favoutireAction(photoId: String, cellNumber: Int) {
-        self.defaults.addIdToUD(id: photoId)
-        self.collectionView.reloadItems(at: [IndexPath(row: cellNumber, section: 0)])
+        self.viewModel.userDefaultsAction(id: photoId)
     }
 }
 
 extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if photos.count == 0 {
-            collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
-            return photos.count
-        } else {
-            collectionView.setEmptyMessage("")
-            return photos.count
+        switch self.lastState {
+        case let .successLinks(objects):
+            if objects.arrOfPhotos.count == 0 {
+                collectionView.setEmptyMessage(Texts.GeneralVCEnum.emptyData)
+            }
+            return objects.arrOfPhotos.count
+        default:
+            return 0
         }
     }
 
@@ -88,25 +94,30 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             for: indexPath
         ) as? CollectionViewCell else { return UICollectionViewCell() }
 
-        if !photos.isEmpty {
-            cell.photoLink = photos[indexPath.row].link
+        switch lastState {
+        case let.successLinks(stateObject):
+            if !stateObject.arrOfPhotos.isEmpty {
+                cell.photoLink = stateObject.arrOfPhotos[indexPath.row].link
+            }
+            if stateObject.arrOfPhotos[indexPath.row].isFavorite {
+                cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            } else {
+                cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
+            }
+            cell.favouritPressed = {
+                self.favoutireAction(photoId: stateObject.arrOfPhotos[indexPath.row].id, cellNumber: indexPath.row)
+            }
+            cell.sharePressed = {
+                guard let img = cell.photo.image else { return }
+                self.sharePhoto(img: img)
+            }
+            cell.titleLbl.text = stateObject.arrOfPhotos[indexPath.row].title
+            return cell
+        case .loading:
+            return UICollectionViewCell()
+        case .error:
+            return UICollectionViewCell()
         }
-        if defaults.isInFavourite(id: photos[indexPath.row].id) {
-            cell.favouriteBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
-        } else {
-            cell.favouriteBtn.setImage(UIImage(systemName: "star"), for: .normal)
-        }
-
-        cell.favouritPressed = {
-            self.favoutireAction(photoId: self.photos[indexPath.row].id, cellNumber: indexPath.row)
-        }
-
-        cell.sharePressed = {
-            guard let img = cell.photo.image else { return }
-            self.sharePhoto(img: img)
-        }
-
-        cell.titleLbl.text = photos[indexPath.row].title
         return cell
     }
 
@@ -116,8 +127,16 @@ extension FavouriteVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let newViewController = ShowPhotoVC()
-        newViewController.photos = photos
-        newViewController.selectedPhoto = indexPath.row
-        self.present(newViewController, animated: true)
+        switch lastState {
+        case let.successLinks(stateObject):
+            newViewController.photos = stateObject.arrOfPhotos
+            newViewController.selectedPhoto = indexPath.row
+            self.present(newViewController, animated: true)
+//            newNavController.pushViewController(newViewController, animated: true)
+        case .loading:
+            break
+        case .error(_):
+            break
+        }
     }
 }

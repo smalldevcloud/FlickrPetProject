@@ -33,7 +33,7 @@ final class FlickrWorker {
                     // = кол-ву элементов в перебираемом массиве - состояние вью меняется и оно начинает подгружать фото по полученным ссылкам
                     let newPhoto = item.toDomainObject()
 
-                    self?.getLink(photoId: newPhoto.id, completionHandler: { result in
+                    self?.getLink(photoId: newPhoto.id, onResponse: { result in
                         switch result {
                         case let .success(url):
                             newPhoto.link = url
@@ -48,13 +48,13 @@ final class FlickrWorker {
         })
     }
 
-    func getLink(photoId: String, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+    func getLink(photoId: String, onResponse: @escaping (Result<URL, Error>) -> Void) {
         Networker.shared.getMediumSizeLinks(photoID: photoId, onResponse: { result in
             switch result {
             case let .success(url):
-                completionHandler(.success(url))
+                onResponse(.success(url))
             case let .failure(error):
-                completionHandler(.failure(error))
+                onResponse(.failure(error))
             }
         })
     }

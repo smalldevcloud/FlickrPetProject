@@ -17,16 +17,13 @@ final class UserDefaultsHelper {
         getIds()
 
         if array.contains(id) {
-            print("already contain. need to remove")
             guard let index = array.firstIndex(of: id) else { return }
             array.remove(at: index)
 
         } else {
             array.append(id)
-            print("new arr inserted")
         }
         setIds(ids: array)
-        print(array)
     }
 
     func isInFavourite(id: String) -> Bool {

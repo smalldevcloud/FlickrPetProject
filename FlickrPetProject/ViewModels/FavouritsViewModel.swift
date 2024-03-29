@@ -18,7 +18,9 @@ extension FavouritsViewModel {
 
 class FavouritsViewModel {
     var state = Dynamic<FavouritsVMState>(.loading)
+    let flickrWorker = FlickrWorker()
     let defaults = UserDefaultsHelper()
+    var photos = [FlickrDomainPhoto]()
 
     func start() {
         var tempDomainObjects = [FlickrDomainPhoto]()
@@ -32,32 +34,34 @@ class FavouritsViewModel {
                 }
             }
         }
-
         defaults.getIds()
-
         if !defaults.array.isEmpty {
             // если массив избранных фото не пуст - создание домейн-объектов и получение ссылок по ним
-            
             for id in defaults.array {
-
-                Networker.shared.getMediumSizeLinks(photoID: id, onResponse: { result in
+                flickrWorker.getLink(photoId: id, onResponse: { [weak self] result in
                     let domainPhoto = FlickrDomainPhoto()
-
                     switch result {
                     case let .success(url):
                         domainPhoto.link = url
                         domainPhoto.id = id
+                        domainPhoto.isFavorite = true
                         tempDomainObjects.append(domainPhoto)
                         counter += 1
                     case let .failure(err):
-                        self.state.value = .error(err)
+                        self?.state.value = .error(err)
                     }
                 })
             }
         } else {
             //            если избранных уже нет - обновление состояния вью
-
             self.state.value = .successLinks(TransportObjectToView(arrOfPhotos: [], allPages: 0, loadedPages: 0))
         }
+    }
+
+    func userDefaultsAction(id: String) {
+        //        если нажимается кнопка избранного, то по id ищет фото в массиве. если не было в избранном - добавляет, если было - убирает.
+        //        обновляет объект самого фото и отправляет массив снова во вью новым стейтом
+        defaults.addIdToUD(id: id)
+        start()
     }
 }
